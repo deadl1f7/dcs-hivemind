@@ -43,7 +43,7 @@ function createAndConfigureServer(
             description: "Invokes a specific gRPC method",
             inputSchema: z.object({
                 method: z.string().describe("The gRPC method name"),
-                payload: z.object(z.any()).optional().describe("JSON payload for the call"),
+                payload: z.any().optional().describe("JSON payload for the call"),
             }),
         } as any,
         async (params) => {
