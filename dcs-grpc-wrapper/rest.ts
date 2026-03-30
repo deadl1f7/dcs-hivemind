@@ -41,7 +41,7 @@ export const addRoutes = (options: GrpcRouteOptions): Router => {
         const { methodName } = req.params;
 
         // A. Validate methodName type and existence in Catalogue
-        if (typeof methodName !== 'string' || !protoCatalogue[methodName]) {
+        if (typeof methodName !== 'string' || !protoCatalogue || !protoCatalogue[methodName]) {
             return res.status(404).json({
                 error: `Invalid or unknown gRPC method: ${methodName}`,
                 suggestion: "Check /proto/catalogue for valid method names."

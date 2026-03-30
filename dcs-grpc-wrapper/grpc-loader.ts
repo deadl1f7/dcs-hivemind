@@ -59,7 +59,6 @@ export function getGrpcClient(options: LoaderOptions) {
         });
 
         const grpcObject = loadPackageDefinition(packageDef);
-        const catalogue: ProtoCatalogue = grpcObject;
 
         // Try to find and instantiate the service, but don't fail if it doesn't exist
         // We can still use the catalogue for introspection
@@ -75,8 +74,12 @@ export function getGrpcClient(options: LoaderOptions) {
             console.warn(`[gRPC Loader] Service ${packageName}.${serviceName} not found. Operating in catalogue-only mode.`);
         }
 
+        // Unwrap the DCS package for cleaner access in services
+        const catalogue: ProtoCatalogue = servicePackage || grpcObject;
+        const availableMethods = Object.keys(catalogue);
+
         instance = { client, catalogue };
-        console.log(`[gRPC Loader] Proto catalogue loaded with ${Object.keys(catalogue).length} packages`);
+        console.log(`[gRPC Loader] Proto catalogue loaded with ${availableMethods.length} services: ${availableMethods.join(', ')}`);
 
     } catch (err) {
         console.error(`[gRPC Loader] Critical failure loading proto:`, err);
