@@ -19,7 +19,7 @@ user-invocable: true
 ### 1. Start the Aspire AppHost
 If not already running, start the Aspire application:
 ```bash
-npm run dev
+aspire start
 ```
 
 This starts the REST API server along with the MCP server.
@@ -64,7 +64,7 @@ Expected response:
 - `availableMethods` → List of available gRPC services
 
 **Issues:**
-- No response → REST server not running. Check Aspire logs: `npm run dev`
+- No response → REST server not running. Check Aspire logs: `aspire logs`
 - `grpcClientConnected: false` → gRPC client not connected. Verify DCS service is accessible.
 - Empty `availableMethods` → Proto catalogue failed to load. Check proto files.
 
@@ -91,7 +91,7 @@ curl -X POST http://localhost:3000/api/dcs/metadata.version \
 
 | Issue | Solution |
 |-------|----------|
-| Connection refused | Verify Aspire is running with `npm run dev` and port 3000 is available |
+| Connection refused | Verify Aspire is running with `aspire start` and port 3000 is available |
 | Health endpoint returns `grpcClientConnected: false` | Check DCS service status and network connectivity |
 | Proto catalogue endpoint returns 503 | Proto definitions failed to load; check `dcs-grpc-wrapper/proto/` |
 | gRPC method call fails with 404 | Verify method name exists in proto catalogue via `/api/proto/catalogue` |

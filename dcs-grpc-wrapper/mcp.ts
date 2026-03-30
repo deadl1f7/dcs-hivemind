@@ -1,16 +1,22 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { Router } from "express";
+import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { DynamicGrpcClient, ProtoCatalogue } from "./grpc-loader.js";
+import type { Request, Response } from 'express';
 
-export function setupMcp(
+export async function createMcpServer(
     grpcClient: DynamicGrpcClient | null,
     protoCatalogue: ProtoCatalogue | null) {
+
+
+    // Create server instance once at startup
     const mcpServer = new McpServer({
         name: "dcs-grpc-wrapper",
         version: "1.0.0",
     });
 
+    // Register tools once
     mcpServer.registerTool(
         "get_proto_catalogue",
         {
@@ -75,62 +81,32 @@ export function setupMcp(
         }
     );
 
+    // Create transport for this request
+    const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: undefined // stateless
+    });
 
-    const router = Router();
-    router.post("/", async (req, res) => {
+    // Connect server to transport
+    await mcpServer.connect(transport);
+
+    const app = createMcpExpressApp();
+
+    app.post('/', async (req: Request, res: Response) => {
+        console.log(`[MCP] Handling MCP request... path: ${req.path}`);
+
         try {
-            const { method, params } = req.body;
 
-            if (!method) {
-                return res.status(400).json({ error: "Missing 'method' in request body" });
-            }
-
-            let result: any;
-
-            // Handle registered tools
-            switch (method) {
-                case "check_health":
-                    result = {
-                        status: "ok",
-                        grpcClientConnected: !!grpcClient,
-                        timestamp: new Date().toISOString(),
-                        mcpVersion: "1.0.0"
-                    };
-                    break;
-
-                case "get_proto_catalogue":
-                    result = protoCatalogue || {};
-                    break;
-
-                case "call_grpc_method":
-                    if (!params || !params.method) {
-                        return res.status(400).json({ error: "Missing 'method' in params" });
-                    }
-
-                    if (!grpcClient?.[params.method]) {
-                        return res.status(404).json({ error: `gRPC method ${params.method} not found` });
-                    }
-
-                    result = await new Promise((resolve) => {
-                        grpcClient[params.method](params.payload || {}, (err: any, response: any) => {
-                            if (err) {
-                                resolve({ error: err.message || "gRPC call failed" });
-                            } else {
-                                resolve(response);
-                            }
-                        });
-                    });
-                    break;
-
-                default:
-                    return res.status(404).json({ error: `Unknown method: ${method}` });
-            }
-
-            res.json({ result });
-        } catch (err: any) {
-            console.error("[MCP Error]", err);
-            res.status(500).json({ error: err.message || "MCP Execution Error" });
+            // Handle the request
+            await transport.handleRequest(req, res, req.body);
+        } catch (error) {
+            console.error('[MCP] Error handling request:', error);
+            res.status(500).json({ error: 'MCP request failed' });
         }
     });
-    return { mcpServer, mcpRouter: router };
+
+
+
+    console.log('[MCP] MCP Express app configured with POST handler');
+
+    return app;
 }

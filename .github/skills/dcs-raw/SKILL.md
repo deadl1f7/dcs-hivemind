@@ -1,6 +1,6 @@
 ---
 name: dcs-raw
-description: "Invoke DCS gRPC methods via MCP tools. USE FOR: calling gRPC methods from VS Code. INVOKES: Aspire MCP tools (call_grpc_method)."
+description: "Invoke DCS gRPC methods via MCP tool calls. USE FOR: calling gRPC methods when specific skills don't exist. INVOKES: MCP call_grpc_method tool."
 ---
 
 # dcs-raw Skill
@@ -21,7 +21,7 @@ Use this skill to invoke DCS gRPC methods directly from VS Code via MCP. Raw pay
 - **Input**:
   - `method` (string, required): The gRPC method name
   - `payload` (object, optional): JSON payload for the method
-- **Usage**: `aspire mcp call dcs-grpc call_grpc_method --input '{"method":"YourMethod","payload":{"key":"value"}}'`
+- **Usage**: `aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"YourMethod","payload":{"key":"value"}}'`
 
 ## Quick Commands
 
@@ -32,17 +32,12 @@ aspire mcp tools --format json
 
 Call a gRPC method:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"ExampleMethod","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ExampleMethod","payload":{}}'
 ```
 
 ## Notes
 
-- All calls are logged to `grpc-call-log.jsonl` in the wrapper's working directory
 - Methods must exist in the loaded proto file
 - Payloads are passed as-is to the gRPC service
 - Errors are returned in the MCP response
-
-## Alternative: HTTP API
-
-For direct HTTP access:
-- Call method: `POST http://localhost:3000/api/dcs/<method>` with JSON body
+- This is a catch-all skill; prefer using specific service skills (dcs-unit, dcs-mission, etc.) when available

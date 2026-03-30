@@ -28,17 +28,17 @@ Invoke DCS World service gRPC methods for querying world state and geography inf
 
 Get Blue coalition airbases:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetAirbases","payload":{"coalition":"COALITION_BLUE"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetAirbases","payload":{"coalition":"COALITION_BLUE"}}'
 ```
 
 Get all mark panels:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetMarkPanels","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetMarkPanels","payload":{}}'
 ```
 
 Get theatre/map name:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetTheatre","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTheatre","payload":{}}'
 ```
 
 ## References

@@ -45,17 +45,17 @@ Invoke DCS Mission service gRPC methods for streaming events and units, managing
 
 Stream events:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"StreamEvents","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"StreamEvents","payload":{}}'
 ```
 
 Get scenario current time:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetScenarioCurrentTime","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetScenarioCurrentTime","payload":{}}'
 ```
 
 Add mission command:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"AddMissionCommand","payload":{"path":["MyCommand"],"name":"Click Me","func":{"name":"myFunc"}}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"AddMissionCommand","payload":{"path":["MyCommand"],"name":"Click Me","func":{"name":"myFunc"}}}'
 ```
 
 ## References

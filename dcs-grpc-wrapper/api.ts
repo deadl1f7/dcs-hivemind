@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { addRoutes } from './rest.js';
-import { setupMcp } from './mcp.js';
+import { createMcpServer } from './mcp.js';
 import { getGrpcClient } from './grpc-loader.js';
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -18,9 +18,17 @@ app.use(express.json());
 // 2. Mount REST Router (Legacy/Internal API)
 app.use('/api', addRoutes({ grpcClient, protoCatalogue }));
 
-// 3. Mount MCP Router (Model Context Protocol)
-const { mcpRouter } = setupMcp(grpcClient, protoCatalogue);
-app.use('/mcp/dcs-grpc', mcpRouter);
+// 3. Setup MCP Server (Model Context Protocol)
+try {
+    console.log('[MCP] Setting up MCP server...');
+    const mcpApp = await createMcpServer(grpcClient, protoCatalogue);
+
+    // Mount MCP app at /mcp/dcs-grpc-wrapper as configured in AppHost
+    app.use('/mcp/dcs-grpc-wrapper', mcpApp);
+    console.log('[MCP] MCP server mounted at /mcp/dcs-grpc-wrapper');
+} catch (error) {
+    console.error('[MCP] Failed to setup MCP server:', error);
+}
 
 // 4. Start Server with Top-Level Await
 try {

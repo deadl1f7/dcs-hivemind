@@ -38,32 +38,32 @@ Invoke DCS Hook service gRPC methods for mission lifecycle control and hook envi
 
 Get mission name:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetMissionName","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetMissionName","payload":{}}'
 ```
 
 Pause mission:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"SetPaused","payload":{"paused":true}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetPaused","payload":{"paused":true}}'
 ```
 
 Unpause mission:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"SetPaused","payload":{"paused":false}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetPaused","payload":{"paused":false}}'
 ```
 
 Reload mission:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"ReloadCurrentMission","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ReloadCurrentMission","payload":{}}'
 ```
 
 Load next mission:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"LoadNextMission","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"LoadNextMission","payload":{}}'
 ```
 
 Load specific mission:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"LoadMission","payload":{"filePath":"/path/to/mission.miz"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"LoadMission","payload":{"filePath":"/path/to/mission.miz"}}'
 ```
 
 ## References

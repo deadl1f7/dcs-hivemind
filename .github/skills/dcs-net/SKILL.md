@@ -28,32 +28,32 @@ Invoke DCS Net service gRPC methods for multiplayer server management.
 
 Send chat to all:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"SendChat","payload":{"message":"Hello everyone!","coalition":"COALITION_ALL"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SendChat","payload":{"message":"Hello everyone!","coalition":"COALITION_ALL"}}'
 ```
 
 Send direct message:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"SendChatTo","payload":{"message":"Hello!","targetPlayerId":1}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SendChatTo","payload":{"message":"Hello!","targetPlayerId":1}}'
 ```
 
 Get connected players:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetPlayers","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetPlayers","payload":{}}'
 ```
 
 Kick player:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"KickPlayer","payload":{"playerId":1,"message":"You have been kicked"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"KickPlayer","payload":{"playerId":1,"message":"You have been kicked"}}'
 ```
 
 Force player into Blue coalition:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"ForcePlayerSlot","payload":{"playerId":1,"coalition":"COALITION_BLUE","slotId":"Pilot-1"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ForcePlayerSlot","payload":{"playerId":1,"coalition":"COALITION_BLUE","slotId":"Pilot-1"}}'
 ```
 
 Move player to spectators:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"ForcePlayerSlot","payload":{"playerId":1,"coalition":"COALITION_NEUTRAL","slotId":""}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ForcePlayerSlot","payload":{"playerId":1,"coalition":"COALITION_NEUTRAL","slotId":""}}'
 ```
 
 ## References

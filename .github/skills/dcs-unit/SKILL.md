@@ -37,27 +37,27 @@ Invoke DCS Unit service gRPC methods for querying and controlling individual uni
 
 Get unit position:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetPosition","payload":{"name":"Pilot-1"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetPosition","payload":{"name":"Pilot-1"}}'
 ```
 
 Get unit transform (position, orientation, velocity):
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetTransform","payload":{"name":"Pilot-1"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTransform","payload":{"name":"Pilot-1"}}'
 ```
 
 Get radar status:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetRadar","payload":{"name":"Pilot-1"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetRadar","payload":{"name":"Pilot-1"}}'
 ```
 
 Enable emissions:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"SetEmission","payload":{"name":"Pilot-1","emitting":true}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetEmission","payload":{"name":"Pilot-1","emitting":true}}'
 ```
 
 Get player controlling unit:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetPlayerName","payload":{"name":"Pilot-1"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetPlayerName","payload":{"name":"Pilot-1"}}'
 ```
 
 ## References

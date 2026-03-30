@@ -34,22 +34,22 @@ Invoke DCS Coalition service gRPC methods for managing and querying coalition-le
 
 Get all groups in coalition:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetGroups","payload":{"coalition":"COALITION_BLUE"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetGroups","payload":{"coalition":"COALITION_BLUE"}}'
 ```
 
 Get player-controlled units:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetPlayerUnits","payload":{"coalition":"COALITION_BLUE"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetPlayerUnits","payload":{"coalition":"COALITION_BLUE"}}'
 ```
 
 Get bullseye position:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetBullseye","payload":{"coalition":"COALITION_BLUE"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetBullseye","payload":{"coalition":"COALITION_BLUE"}}'
 ```
 
 Get static objects:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetStaticObjects","payload":{"coalition":"COALITION_BLUE"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetStaticObjects","payload":{"coalition":"COALITION_BLUE"}}'
 ```
 
 ## References

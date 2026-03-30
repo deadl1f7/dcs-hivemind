@@ -19,7 +19,7 @@ user-invocable: true
 ### 1. Start the Aspire AppHost
 If not already running, start the Aspire application:
 ```bash
-npm run dev
+aspire start
 ```
 
 This starts the MCP server via the Aspire orchestrated services.
@@ -59,7 +59,7 @@ The health check will return:
 
 | Issue | Solution |
 |-------|----------|
-| MCP not responding | Verify Aspire is running with `npm run dev` |
+| MCP not responding | Verify Aspire is running with `aspire start` |
 | gRPC client disconnected | Check DCS service is running and accessible |
 | Health endpoint times out | Check network connectivity and firewall rules |
 | Proto catalogue empty | Verify proto files in `dcs-grpc-wrapper/proto/` load correctly |

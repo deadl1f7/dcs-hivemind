@@ -60,26 +60,52 @@ export function getGrpcClient(options: LoaderOptions) {
 
         const grpcObject = loadPackageDefinition(packageDef);
 
-        // Try to find and instantiate the service, but don't fail if it doesn't exist
-        // We can still use the catalogue for introspection
+        // Create a dynamic client that aggregates all services from the proto
+        const dynamicClient: any = {};
         const servicePackage = (grpcObject as any)[packageName];
-        const Service = servicePackage?.[serviceName];
 
-        let client: DynamicGrpcClient | null = null;
+        // Recursively find all service constructors in the proto hierarchy
+        function collectServices(obj: any, depth = 0): void {
+            if (!obj || depth > 5) return; // Prevent infinite recursion
 
-        if (Service) {
-            client = new Service(target, credentials.createInsecure()) as DynamicGrpcClient;
-            console.log(`[gRPC Loader] Singleton initialized for ${packageName}.${serviceName} at ${target}`);
-        } else {
-            console.warn(`[gRPC Loader] Service ${packageName}.${serviceName} not found. Operating in catalogue-only mode.`);
+            for (const key in obj) {
+                const value = obj[key];
+                // Check if this is a service constructor (has 'service' in its name or is a function)
+                if (typeof value === 'function' && value.service) {
+                    const serviceClient = new value(target, credentials.createInsecure());
+                    // Map all RPC methods from this service
+                    for (const method in serviceClient) {
+                        if (typeof serviceClient[method] === 'function') {
+                            dynamicClient[method] = serviceClient[method].bind(serviceClient);
+                        }
+                    }
+                    console.log(`[gRPC Loader] Loaded service: ${key}`);
+                } else if (typeof value === 'object' && value !== null) {
+                    // Recurse into nested objects to find more services
+                    collectServices(value, depth + 1);
+                }
+            }
         }
 
-        // Unwrap the DCS package for cleaner access in services
+        collectServices(servicePackage || grpcObject);
+
+        let client: DynamicGrpcClient | null = null;
+        if (Object.keys(dynamicClient).length > 0) {
+            client = dynamicClient as DynamicGrpcClient;
+        }
+
+        if (client && Object.keys(dynamicClient).length > 0) {
+            console.log(`[gRPC Loader] Dynamic client initialized with ${Object.keys(dynamicClient).length} RPC methods at ${target}`);
+        } else {
+            console.warn(`[gRPC Loader] No services found in proto. Operating in catalogue-only mode.`);
+        }
+
+        // Use the service package as catalogue for introspection (unwrap from grpcObject)
         const catalogue: ProtoCatalogue = servicePackage || grpcObject;
-        const availableMethods = Object.keys(catalogue);
+        const availableServices = Object.keys(servicePackage || {});
 
         instance = { client, catalogue };
-        console.log(`[gRPC Loader] Proto catalogue loaded with ${availableMethods.length} services: ${availableMethods.join(', ')}`);
+        console.log(`[gRPC Loader] Proto catalogue loaded with ${availableServices.length} service packages: ${availableServices.join(', ')}`);
 
     } catch (err) {
         console.error(`[gRPC Loader] Critical failure loading proto:`, err);

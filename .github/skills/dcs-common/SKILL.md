@@ -43,3 +43,11 @@ Use this skill to understand the common data structures and enums when working w
 
 - [DCS Object Class Documentation](https://wiki.hoggitworld.com/view/DCS_Class_Object)
 - [Proto File](../../proto/common/v0/common.proto)
+
+## Invocation
+
+While dcs-common itself is not directly invoked, it's used by all other DCS services. Reference the specific service skill (dcs-unit, dcs-mission, etc.) and use the MCP tool call:
+
+```bash
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"MethodName","payload":{}}'
+```

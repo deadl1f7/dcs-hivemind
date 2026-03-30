@@ -24,17 +24,17 @@ Invoke DCS Timer service gRPC methods for scenario timing information.
 
 Get elapsed time since mission start:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetTime","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTime","payload":{}}'
 ```
 
 Get absolute mission time with date:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetAbsoluteTime","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetAbsoluteTime","payload":{}}'
 ```
 
 Get mission start time:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetTimeZero","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTimeZero","payload":{}}'
 ```
 
 ## References

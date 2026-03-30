@@ -25,12 +25,12 @@ Invoke DCS Metadata service gRPC methods for system health and version informati
 
 Check health:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetHealth","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetHealth","payload":{}}'
 ```
 
 Get version:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetVersion","payload":{}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetVersion","payload":{}}'
 ```
 
 ## Notes

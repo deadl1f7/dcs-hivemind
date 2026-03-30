@@ -31,22 +31,22 @@ Invoke DCS Custom service gRPC methods for non-standard but useful mission funct
 
 Request mission assignment:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"RequestMissionAssignment","payload":{"unitName":"Pilot-1","missionType":"CAP"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"RequestMissionAssignment","payload":{"unitName":"Pilot-1","missionType":"CAP"}}'
 ```
 
 Join DCT mission:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"JoinMission","payload":{"unitName":"Pilot-1","missionCode":12345}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"JoinMission","payload":{"unitName":"Pilot-1","missionCode":12345}}'
 ```
 
 Get magnetic declination:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"GetMagneticDeclination","payload":{"position":{"lat":40.0,"lon":0.0,"alt":1000}}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetMagneticDeclination","payload":{"position":{"lat":40.0,"lon":0.0,"alt":1000}}}'
 ```
 
 Evaluate Lua:
 ```bash
-aspire mcp call dcs-grpc call_grpc_method --input '{"method":"Eval","payload":{"luaCode":"return world.theatre()"}}'
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Eval","payload":{"luaCode":"return world.theatre()"}}'
 ```
 
 ## References
