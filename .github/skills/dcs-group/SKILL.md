@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-group
 description: "Invoke DCS Group gRPC methods. Service for managing group units, activation, and destruction. Proto: dcs-grpc-wrapper/proto/group/v0/group.proto"
 ---
@@ -25,23 +25,31 @@ Invoke DCS Group service gRPC methods for querying and controlling unit groups.
 ## Quick Examples
 
 Get all units in group:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetUnits","payload":{"groupName":"Group-1"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetUnits\",\"payload\":{\"groupName\":\"Group-1\"}}
+'@
 ```
 
 Get only active units:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetUnits","payload":{"groupName":"Group-1","active":true}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetUnits\",\"payload\":{\"groupName\":\"Group-1\",\"active\":true}}
+'@
 ```
 
 Activate late-activation group:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Activate","payload":{"groupName":"Group-1"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"Activate\",\"payload\":{\"groupName\":\"Group-1\"}}
+'@
 ```
 
 Destroy group:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Destroy","payload":{"groupName":"Group-1"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"Destroy\",\"payload\":{\"groupName\":\"Group-1\"}}
+'@
 ```
 
 ## References

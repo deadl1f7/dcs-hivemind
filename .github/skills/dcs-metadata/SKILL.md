@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-metadata
 description: "Invoke DCS Metadata gRPC methods. Service for health checks and version information. Proto: dcs-grpc-wrapper/proto/metadata/v0/metadata.proto"
 ---
@@ -24,13 +24,17 @@ Invoke DCS Metadata service gRPC methods for system health and version informati
 ## Quick Examples
 
 Check health:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetHealth","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetHealth\",\"payload\":{}}
+'@
 ```
 
 Get version:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetVersion","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetVersion\",\"payload\":{}}
+'@
 ```
 
 ## Notes

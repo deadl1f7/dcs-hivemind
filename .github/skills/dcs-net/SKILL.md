@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-net
 description: "Invoke DCS Net gRPC methods. Service for player management, chat, and slot control. Proto: dcs-grpc-wrapper/proto/net/v0/net.proto"
 ---
@@ -27,33 +27,45 @@ Invoke DCS Net service gRPC methods for multiplayer server management.
 ## Quick Examples
 
 Send chat to all:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SendChat","payload":{"message":"Hello everyone!","coalition":"COALITION_ALL"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SendChat\",\"payload\":{\"message\":\"Hello everyone!\",\"coalition\":\"COALITION_ALL\"}}
+'@
 ```
 
 Send direct message:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SendChatTo","payload":{"message":"Hello!","targetPlayerId":1}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SendChatTo\",\"payload\":{\"message\":\"Hello!\",\"targetPlayerId\":1}}
+'@
 ```
 
 Get connected players:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetPlayers","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetPlayers\",\"payload\":{}}
+'@
 ```
 
 Kick player:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"KickPlayer","payload":{"playerId":1,"message":"You have been kicked"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"KickPlayer\",\"payload\":{\"playerId\":1,\"message\":\"You have been kicked\"}}
+'@
 ```
 
 Force player into Blue coalition:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ForcePlayerSlot","payload":{"playerId":1,"coalition":"COALITION_BLUE","slotId":"Pilot-1"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"ForcePlayerSlot\",\"payload\":{\"playerId\":1,\"coalition\":\"COALITION_BLUE\",\"slotId\":\"Pilot-1\"}}
+'@
 ```
 
 Move player to spectators:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ForcePlayerSlot","payload":{"playerId":1,"coalition":"COALITION_NEUTRAL","slotId":""}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"ForcePlayerSlot\",\"payload\":{\"playerId\":1,\"coalition\":\"COALITION_NEUTRAL\",\"slotId\":\"\"}}
+'@
 ```
 
 ## References

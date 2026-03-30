@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-atmosphere
 description: "Invoke DCS Atmosphere gRPC methods. Service for querying wind, temperature, and pressure data. Proto: dcs-grpc-wrapper/proto/atmosphere/v0/atmosphere.proto"
 ---
@@ -25,18 +25,24 @@ Invoke DCS Atmosphere service gRPC methods for querying environmental conditions
 ## Quick Examples
 
 Get wind at position (lat/lon/alt required):
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetWind","payload":{"position":{"lat":40.0,"lon":0.0,"alt":5000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetWind\",\"payload\":{\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
+'@
 ```
 
 Get wind with turbulence:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetWindWithTurbulence","payload":{"position":{"lat":40.0,"lon":0.0,"alt":5000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetWindWithTurbulence\",\"payload\":{\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
+'@
 ```
 
 Get temperature and pressure:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTemperatureAndPressure","payload":{"position":{"lat":40.0,"lon":0.0,"alt":5000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetTemperatureAndPressure\",\"payload\":{\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
+'@
 ```
 
 ## References

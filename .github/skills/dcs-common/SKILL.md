@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-common
 description: "Common type definitions and enums used across DCS gRPC services. Proto: dcs-grpc-wrapper/proto/common/v0/common.proto"
 ---
@@ -48,6 +48,8 @@ Use this skill to understand the common data structures and enums when working w
 
 While dcs-common itself is not directly invoked, it's used by all other DCS services. Reference the specific service skill (dcs-unit, dcs-mission, etc.) and use the MCP tool call:
 
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"MethodName","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"MethodName\",\"payload\":{}}
+'@
 ```

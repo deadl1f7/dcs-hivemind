@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-timer
 description: "Invoke DCS Timer gRPC methods. Service for querying scenario and absolute time information. Proto: dcs-grpc-wrapper/proto/timer/v0/timer.proto"
 ---
@@ -23,18 +23,24 @@ Invoke DCS Timer service gRPC methods for scenario timing information.
 ## Quick Examples
 
 Get elapsed time since mission start:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTime","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetTime\",\"payload\":{}}
+'@
 ```
 
 Get absolute mission time with date:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetAbsoluteTime","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetAbsoluteTime\",\"payload\":{}}
+'@
 ```
 
 Get mission start time:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetTimeZero","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetTimeZero\",\"payload\":{}}
+'@
 ```
 
 ## References

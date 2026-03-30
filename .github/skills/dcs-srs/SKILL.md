@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-srs
 description: "Invoke DCS SRS (Simple Radio Standalone) gRPC methods. Service for text-to-speech radio transmissions and client management. Proto: dcs-grpc-wrapper/proto/srs/v0/srs.proto"
 ---
@@ -26,23 +26,31 @@ Invoke DCS SRS (Simple Radio Standalone) service gRPC methods for radio transmis
 ## Quick Examples
 
 Transmit radio message (English):
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Transmit","payload":{"ssml":"Check six position, bandits at twelve o clock","plaintext":"Check six position, bandits at twelve o clock","frequency":251000000,"coalition":"COALITION_BLUE","position":{"lat":40.0,"lon":0.0,"alt":5000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"Transmit\",\"payload\":{\"ssml\":\"Check six position, bandits at twelve o clock\",\"plaintext\":\"Check six position, bandits at twelve o clock\",\"frequency\":251000000,\"coalition\":\"COALITION_BLUE\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
+'@
 ```
 
 Transmit with SSML (prosody control):
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Transmit","payload":{"ssml":"<prosody rate=\"0.9\">Roger, low fuel state</prosody>","plaintext":"Roger, low fuel state","frequency":251000000,"coalition":"COALITION_BLUE","position":{"lat":40.0,"lon":0.0,"alt":5000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"Transmit\",\"payload\":{\"ssml\":\"<prosody rate=\\"0.9\\">Roger, low fuel state</prosody>\",\"plaintext\":\"Roger, low fuel state\",\"frequency\":251000000,\"coalition\":\"COALITION_BLUE\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
+'@
 ```
 
 Async transmission (non-blocking):
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Transmit","payload":{"ssml":"Contact visual","frequency":251000000,"async":true,"coalition":"COALITION_BLUE","position":{"lat":40.0,"lon":0.0,"alt":5000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"Transmit\",\"payload\":{\"ssml\":\"Contact visual\",\"frequency\":251000000,\"async\":true,\"coalition\":\"COALITION_BLUE\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
+'@
 ```
 
 Get SRS clients:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetClients","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetClients\",\"payload\":{}}
+'@
 ```
 
 ## Notes

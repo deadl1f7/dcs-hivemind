@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-hook
 description: "Invoke DCS Hook gRPC methods. Service for mission control like pause, reload, load missions, and hook environment evaluation. Proto: dcs-grpc-wrapper/proto/hook/v0/hook.proto"
 ---
@@ -37,33 +37,45 @@ Invoke DCS Hook service gRPC methods for mission lifecycle control and hook envi
 ## Quick Examples
 
 Get mission name:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetMissionName","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetMissionName\",\"payload\":{}}
+'@
 ```
 
 Pause mission:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetPaused","payload":{"paused":true}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SetPaused\",\"payload\":{\"paused\":true}}
+'@
 ```
 
 Unpause mission:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetPaused","payload":{"paused":false}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SetPaused\",\"payload\":{\"paused\":false}}
+'@
 ```
 
 Reload mission:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"ReloadCurrentMission","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"ReloadCurrentMission\",\"payload\":{}}
+'@
 ```
 
 Load next mission:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"LoadNextMission","payload":{}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"LoadNextMission\",\"payload\":{}}
+'@
 ```
 
 Load specific mission:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"LoadMission","payload":{"filePath":"/path/to/mission.miz"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"LoadMission\",\"payload\":{\"filePath\":\"/path/to/mission.miz\"}}
+'@
 ```
 
 ## References

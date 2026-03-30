@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-custom
 description: "Invoke DCS Custom gRPC methods. Custom/non-standard APIs like DCT integration, mission evaluation, and magnetic declination. Proto: dcs-grpc-wrapper/proto/custom/v0/custom.proto"
 ---
@@ -30,23 +30,31 @@ Invoke DCS Custom service gRPC methods for non-standard but useful mission funct
 ## Quick Examples
 
 Request mission assignment:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"RequestMissionAssignment","payload":{"unitName":"Pilot-1","missionType":"CAP"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"RequestMissionAssignment\",\"payload\":{\"unitName\":\"Pilot-1\",\"missionType\":\"CAP\"}}
+'@
 ```
 
 Join DCT mission:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"JoinMission","payload":{"unitName":"Pilot-1","missionCode":12345}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"JoinMission\",\"payload\":{\"unitName\":\"Pilot-1\",\"missionCode\":12345}}
+'@
 ```
 
 Get magnetic declination:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetMagneticDeclination","payload":{"position":{"lat":40.0,"lon":0.0,"alt":1000}}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetMagneticDeclination\",\"payload\":{\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":1000}}}
+'@
 ```
 
 Evaluate Lua:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"Eval","payload":{"luaCode":"return world.theatre()"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"Eval\",\"payload\":{\"luaCode\":\"return world.theatre()\"}}
+'@
 ```
 
 ## References

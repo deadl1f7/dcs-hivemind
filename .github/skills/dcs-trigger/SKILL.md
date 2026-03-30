@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-trigger
 description: "Invoke DCS Trigger gRPC methods. Service for UI notifications, marks, flags, and text output. Proto: dcs-grpc-wrapper/proto/trigger/v0/trigger.proto"
 ---
@@ -38,38 +38,52 @@ Invoke DCS Trigger service gRPC methods for UI notifications, screen text, marks
 ## Quick Examples
 
 Display text to all:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"OutText","payload":{"text":"Mission briefing: Proceed to checkpoint Alpha","displayTime":10,"clearPrevious":false}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"OutText\",\"payload\":{\"text\":\"Mission briefing: Proceed to checkpoint Alpha\",\"displayTime\":10,\"clearPrevious\":false}}
+'@
 ```
 
 Display text to coalition:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"OutTextForCoalition","payload":{"coalition":"COALITION_BLUE","text":"All units, check in","displayTime":5}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"OutTextForCoalition\",\"payload\":{\"coalition\":\"COALITION_BLUE\",\"text\":\"All units, check in\",\"displayTime\":5}}
+'@
 ```
 
 Display text to group:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"OutTextForGroup","payload":{"groupName":"Group-1","text":"Group instruction","displayTime":5}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"OutTextForGroup\",\"payload\":{\"groupName\":\"Group-1\",\"text\":\"Group instruction\",\"displayTime\":5}}
+'@
 ```
 
 Add mark on map:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"MarkToAll","payload":{"text":"Checkpoint A","position":{"lat":40.0,"lon":0.0,"alt":0},"readonly":false}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"MarkToAll\",\"payload\":{\"text\":\"Checkpoint A\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":0},\"readonly\":false}}
+'@
 ```
 
 Set user flag:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetUserFlag","payload":{"flag":1,"value":42}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SetUserFlag\",\"payload\":{\"flag\":1,\"value\":42}}
+'@
 ```
 
 Get user flag:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetUserFlag","payload":{"flag":1}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetUserFlag\",\"payload\":{\"flag\":1}}
+'@
 ```
 
 Remove mark:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"RemoveMark","payload":{"markId":5}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"RemoveMark\",\"payload\":{\"markId\":5}}
+'@
 ```
 
 ## References

@@ -1,4 +1,4 @@
----
+﻿---
 name: dcs-controller
 description: "Invoke DCS Controller gRPC methods. Service for unit state control like alarm states and target detection. Proto: dcs-grpc-wrapper/proto/controller/v0/controller.proto"
 ---
@@ -24,23 +24,31 @@ Invoke DCS Controller service gRPC methods for controlling unit states and query
 ## Quick Examples
 
 Set group to red alert:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetAlarmState","payload":{"groupName":"Group-1","alarmState":"ALARM_STATE_RED"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SetAlarmState\",\"payload\":{\"groupName\":\"Group-1\",\"alarmState\":\"ALARM_STATE_RED\"}}
+'@
 ```
 
 Set unit to green (normal):
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"SetAlarmState","payload":{"unitName":"Unit-1","alarmState":"ALARM_STATE_GREEN"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"SetAlarmState\",\"payload\":{\"unitName\":\"Unit-1\",\"alarmState\":\"ALARM_STATE_GREEN\"}}
+'@
 ```
 
 Get detected targets by unit:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetDetectedTargets","payload":{"unitName":"Pilot-1"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetDetectedTargets\",\"payload\":{\"unitName\":\"Pilot-1\"}}
+'@
 ```
 
 Get radar-detected targets only:
-```bash
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input '{"method":"GetDetectedTargets","payload":{"unitName":"Pilot-1","detectionType":"DETECTION_TYPE_RADAR"}}'
+```powershell
+aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
+{\"method\":\"GetDetectedTargets\",\"payload\":{\"unitName\":\"Pilot-1\",\"detectionType\":\"DETECTION_TYPE_RADAR\"}}
+'@
 ```
 
 ## References
