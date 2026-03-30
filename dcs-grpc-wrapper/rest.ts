@@ -13,20 +13,23 @@ export const addRoutes = (options: GrpcRouteOptions): Router => {
     const { grpcClient, protoCatalogue, logFilePath = 'grpc-call-log.jsonl' } = options;
     const router = express.Router();
 
-    if (!protoCatalogue) {
-        throw new Error('Proto catalogue is required to set up routes');
-    }
     // 1. Health & Discovery
     router.get('/health', (_req, res) => {
         res.json({
             status: 'ok',
             grpcClientConnected: !!grpcClient,
-            availableMethods: Object.keys(protoCatalogue || {})
+            protoLoaded: !!protoCatalogue,
+            availableMethods: protoCatalogue ? Object.keys(protoCatalogue) : []
         });
     });
 
+    if (!protoCatalogue) {
+        // Return a basic router with just health endpoint if proto isn't loaded
+        return router;
+    }
+
     // 2. Metadata Export
-    router.get('/api/proto/catalogue', (_req, res) => {
+    router.get('/proto/catalogue', (_req, res) => {
         if (!protoCatalogue) {
             return res.status(503).json({ error: 'Proto catalogue not initialized' });
         }
@@ -34,14 +37,14 @@ export const addRoutes = (options: GrpcRouteOptions): Router => {
     });
 
     // 3. Dynamic gRPC Invocation
-    router.post('/api/dcs/:methodName', (req: Request, res: Response) => {
+    router.post('/dcs/:methodName', (req: Request, res: Response) => {
         const { methodName } = req.params;
 
         // A. Validate methodName type and existence in Catalogue
         if (typeof methodName !== 'string' || !protoCatalogue[methodName]) {
             return res.status(404).json({
                 error: `Invalid or unknown gRPC method: ${methodName}`,
-                suggestion: "Check /api/proto/catalogue for valid method names."
+                suggestion: "Check /proto/catalogue for valid method names."
             });
         }
 

@@ -10,6 +10,12 @@
     "outDir": "./dist",
     "rootDir": "."
   },
-  "include": ["apphost.ts", ".modules/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "apphost.ts",
+    ".modules/**/*.ts",
+    "dcs-grpc-wrapper/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

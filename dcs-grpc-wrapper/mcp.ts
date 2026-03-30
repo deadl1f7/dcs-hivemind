@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Router } from "express";
 import { z } from "zod";
-import { DynamicGrpcClient, ProtoCatalogue } from "./grpc-loader";
+import { DynamicGrpcClient, ProtoCatalogue } from "./grpc-loader.js";
 
 export function setupMcp(
     grpcClient: DynamicGrpcClient | null,
@@ -38,20 +38,6 @@ export function setupMcp(
             }]
         })
     );
-
-    mcpServer.registerTool(
-        "get_proto_catalogue",
-        {
-            description: "Returns the loaded gRPC proto definitions",
-
-        },
-        async () => {
-            return {
-                content: [{ type: "text", text: JSON.stringify(protoCatalogue || {}, null, 2) }],
-            };
-        }
-    );
-
 
     mcpServer.registerTool(
         "call_grpc_method",
@@ -93,18 +79,56 @@ export function setupMcp(
     const router = Router();
     router.post("/", async (req, res) => {
         try {
+            const { method, params } = req.body;
 
-            const serverInstance = (mcpServer as any).server;
-
-            if (!serverInstance) {
-                return res.status(500).json({ error: "Internal MCP Server not initialized" });
+            if (!method) {
+                return res.status(400).json({ error: "Missing 'method' in request body" });
             }
 
+            let result: any;
 
-            const response = await serverInstance.request(req.body.method, req.body.params);
-            res.json(response);
+            // Handle registered tools
+            switch (method) {
+                case "check_health":
+                    result = {
+                        status: "ok",
+                        grpcClientConnected: !!grpcClient,
+                        timestamp: new Date().toISOString(),
+                        mcpVersion: "1.0.0"
+                    };
+                    break;
+
+                case "get_proto_catalogue":
+                    result = protoCatalogue || {};
+                    break;
+
+                case "call_grpc_method":
+                    if (!params || !params.method) {
+                        return res.status(400).json({ error: "Missing 'method' in params" });
+                    }
+
+                    if (!grpcClient?.[params.method]) {
+                        return res.status(404).json({ error: `gRPC method ${params.method} not found` });
+                    }
+
+                    result = await new Promise((resolve) => {
+                        grpcClient[params.method](params.payload || {}, (err: any, response: any) => {
+                            if (err) {
+                                resolve({ error: err.message || "gRPC call failed" });
+                            } else {
+                                resolve(response);
+                            }
+                        });
+                    });
+                    break;
+
+                default:
+                    return res.status(404).json({ error: `Unknown method: ${method}` });
+            }
+
+            res.json({ result });
         } catch (err: any) {
-            console.error("[MCP Bridge Error]", err);
+            console.error("[MCP Error]", err);
             res.status(500).json({ error: err.message || "MCP Execution Error" });
         }
     });

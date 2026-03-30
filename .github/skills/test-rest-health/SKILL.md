@@ -11,7 +11,6 @@ user-invocable: true
 
 - Verify the REST API server is running and responding
 - Check if the gRPC client is connected via REST endpoint
-- Validate proto catalogue accessibility via REST
 - Debug REST API connection issues
 - Monitor REST service health during development
 
@@ -69,15 +68,6 @@ Expected response:
 - `grpcClientConnected: false` → gRPC client not connected. Verify DCS service is accessible.
 - Empty `availableMethods` → Proto catalogue failed to load. Check proto files.
 
-### 4. Retrieve Proto Catalogue
-
-Get all available gRPC method definitions via REST:
-
-```bash
-curl http://localhost:3000/api/proto/catalogue
-```
-
-Returns complete proto catalogue with all available methods and their schemas.
 
 ### 5. Call a gRPC Method (Optional)
 

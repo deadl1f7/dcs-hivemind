@@ -15,15 +15,6 @@ const { client: grpcClient, catalogue: protoCatalogue } = getGrpcClient({
 const app = express();
 app.use(express.json());
 
-// 1.5. Root Health Check (Simple)
-app.get('/health', (_req, res) => {
-    res.json({
-        status: 'ok',
-        grpcConnected: !!grpcClient,
-        timestamp: new Date().toISOString()
-    });
-});
-
 // 2. Mount REST Router (Legacy/Internal API)
 app.use('/api', addRoutes({ grpcClient, protoCatalogue }));
 

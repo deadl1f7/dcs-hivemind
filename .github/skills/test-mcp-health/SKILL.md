@@ -11,7 +11,6 @@ user-invocable: true
 
 - Verify the MCP server is running and responsive
 - Check if the gRPC client is properly connected
-- Validate that the proto catalogue has loaded
 - Debug MCP connection issues
 - Monitor MCP service health during development
 
@@ -55,17 +54,6 @@ The health check will return:
 **Issues:**
 - `grpcClientConnected: false` → gRPC gateway is not connected to DCS. Check DCS service status.
 - No response → MCP server not running or unreachable. Check Aspire logs.
-
-### 4. Get Proto Catalogue (Optional)
-
-Verify proto definitions are loaded:
-
-```
-Tools available in chat:
-- get_proto_catalogue: Returns the loaded gRPC proto definitions
-```
-
-Returns all available gRPC methods organized by service (atmosphere, coalition, mission, etc.).
 
 ## Troubleshooting
 
