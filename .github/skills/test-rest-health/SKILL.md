@@ -29,7 +29,7 @@ This starts the REST API server along with the MCP server.
 Make an HTTP GET request to the REST health endpoint:
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:3000/api/health
 ```
 
 Expected response:
