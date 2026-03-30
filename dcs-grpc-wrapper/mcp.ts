@@ -3,33 +3,25 @@ import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { DynamicGrpcClient, ProtoCatalogue } from "./grpc-loader.js";
-import type { Request, Response } from 'express';
 
-export async function createMcpServer(
+function createAndConfigureServer(
     grpcClient: DynamicGrpcClient | null,
-    protoCatalogue: ProtoCatalogue | null) {
+    protoCatalogue: ProtoCatalogue | null): McpServer {
 
-
-    // Create server instance once at startup
-    const mcpServer = new McpServer({
+    const server = new McpServer({
         name: "dcs-grpc-wrapper",
         version: "1.0.0",
     });
 
-    // Register tools once
-    mcpServer.registerTool(
+    server.registerTool(
         "get_proto_catalogue",
-        {
-            description: "Returns the loaded gRPC proto definitions",
-        },
-        async () => {
-            return {
-                content: [{ type: "text", text: JSON.stringify(protoCatalogue || {}, null, 2) }],
-            };
-        }
+        { description: "Returns the loaded gRPC proto definitions" },
+        async () => ({
+            content: [{ type: "text", text: JSON.stringify(protoCatalogue || {}, null, 2) }],
+        })
     );
 
-    mcpServer.registerTool(
+    server.registerTool(
         "check_health",
         { description: "Checks the health of the gRPC gateway and connection to DCS" },
         async () => ({
@@ -45,7 +37,7 @@ export async function createMcpServer(
         })
     );
 
-    mcpServer.registerTool(
+    server.registerTool(
         "call_grpc_method",
         {
             description: "Invokes a specific gRPC method",
@@ -81,30 +73,25 @@ export async function createMcpServer(
         }
     );
 
-    // Create transport for this request
-    const transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: undefined // stateless
-    });
+    return server;
+}
 
-    // Connect server to transport
-    await mcpServer.connect(transport);
+export async function createMcpServer(
+    grpcClient: DynamicGrpcClient | null,
+    protoCatalogue: ProtoCatalogue | null) {
 
     const app = createMcpExpressApp();
 
-    app.post('/', async (req: Request, res: Response) => {
-        console.log(`[MCP] Handling MCP request... path: ${req.path}`);
-
-        try {
-
-            // Handle the request
-            await transport.handleRequest(req, res, req.body);
-        } catch (error) {
-            console.error('[MCP] Error handling request:', error);
-            res.status(500).json({ error: 'MCP request failed' });
-        }
+    // Stateless mode: create a fresh McpServer + transport per request
+    app.use('/', async (req, res) => {
+        const transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: undefined,
+            enableJsonResponse: true
+        });
+        const server = createAndConfigureServer(grpcClient, protoCatalogue);
+        await server.connect(transport);
+        await transport.handleRequest(req, res, req.body);
     });
-
-
 
     console.log('[MCP] MCP Express app configured with POST handler');
 
