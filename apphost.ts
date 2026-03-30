@@ -11,8 +11,8 @@ const builder = await createBuilder();
 
 // Add the DCS gRPC wrapper sub-app
 const dcsGrpcWrapper = await builder.addNodeApp("dcs-grpc-wrapper", "./dist/dcs-grpc-wrapper", "api.js")
-    .withHttpEndpoint({ port: 3000, env: "PORT", name: "dcs-grpc" })
+    .withHttpEndpoint({ port: 3000, env: "PORT", name: "dcs-grpc-wrapper" })
     .withEnvironment("DCS_GRPC_PROTO", "C:\\Users\\marti\\Saved Games\\DCS\\Docs\\DCS-gRPC\\protos\\dcs\\dcs.proto")
-    .withMcpServer({ path: "/mcp/dcs-grpc", endpointName: "dcs-grpc" });
+    .withMcpServer({ path: "/mcp/dcs-grpc-wrapper", endpointName: "dcs-grpc-wrapper" });
 
 await builder.build().run();
