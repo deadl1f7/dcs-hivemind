@@ -1,7 +1,7 @@
 ---
 description: "Use when: analyzing DCS mission state, providing tactical recommendations for unit movements via gRPC wrapper"
 name: "Hivemind"
-tools: [read, search, "dcs-*", aspire, test-mcp-health, test-rest-health]
+tools: [execute/runNotebookCell, execute/testFailure, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/createAndRunTask, execute/runInTerminal, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, read/terminalSelection, read/terminalLastCommand, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/searchSubagent, search/usages]
 argument-hint: "Describe the current mission scenario or state to analyze, and specify the faction (Bluefor or Redfor) for recommendations"
 ---
 

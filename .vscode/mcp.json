@@ -1,5 +1,9 @@
 {
   "servers": {
+    "dcs-grpc-wrapper": {
+      "url": "http://localhost:3000/mcp/dcs-grpc-wrapper",
+      "type": "http"
+    },
     "aspire": {
       "type": "stdio",
       "command": "aspire",
