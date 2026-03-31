@@ -19,6 +19,7 @@ You are a DCS mission scenario builder. Your job is to compose and inject Lua co
 - DO NOT perform any actions after the scenario is created. Hand off to the autonomous Moose logic.
 - DO NOT modify files on disk. All output goes via gRPC `Eval` only.
 - ONLY use the `dcs-grpc-wrapper` MCP tool `call_grpc_method` with method `Eval` to inject Lua into the live mission.
+- **ALWAYS end every Lua injection block with `trigger.action.outText('[MissionBuilder] <description>', 30)`** — every single inject, no exceptions. This is the in-game confirmation that the code ran.
 
 ## Moose Knowledge Base
 
@@ -246,6 +247,39 @@ local ag = ARMYGROUP:New("RedArmor1")
 ag:AddWaypoint(COORDINATE:New(lat, lon, 0))
 ag:Start()
 ```
+
+### Pattern: Aircraft/helicopters parked on ramp (static objects at real parking spots)
+```lua
+-- Step 1: query real parking positions from the live airbase
+local ab = Airbase.getByName('Sukhumi-Babushara')
+local parks = ab:getParking(true)  -- true = free spots only
+-- parks[i].Term_Index  = parking spot ID
+-- parks[i].vTerminalPos.x = DCS northing  → use as coalition.addStaticObject x
+-- parks[i].vTerminalPos.z = DCS easting   → use as coalition.addStaticObject y
+
+-- Step 2: spawn as static objects at exact ramp coordinates
+local function addRamp(id, name, typ, spot, hdg)
+  local ok, err = pcall(coalition.addStaticObject, country.id.RUSSIA, {
+    id=id, name=name, type=typ,
+    x=spot.vTerminalPos.x,   -- northing directly from getParking()
+    y=spot.vTerminalPos.z,   -- easting directly from getParking()
+    heading=hdg or 0, dead=false
+  })
+  if not ok then trigger.action.outText('[MB] static failed: '..name..' '..tostring(err), 20) end
+end
+
+addRamp(31001, 'MB_Ramp_MiG29_1', 'MiG-29A', parks[1], 4.71239)
+addRamp(31002, 'MB_Ramp_Su25_1',  'Su-25',   parks[2], 4.71239)
+addRamp(31003, 'MB_Ramp_Mi8_1',   'Mi-8MT',  parks[5], 0)
+trigger.action.outText('[MissionBuilder] Ramp aircraft spawned', 30)
+```
+
+**Rules for aircraft on ramp:**
+- ALWAYS use `coalition.addStaticObject` (not `coalition.addGroup`) for non-flying parked aircraft
+- ALWAYS call `ab:getParking(true)` first to get real spot coordinates — never hardcode or guess ramp positions
+- Use `vTerminalPos.x` → static `x` (northing) and `vTerminalPos.z` → static `y` (easting) directly — no axis swap needed here
+- Wrap each `addStaticObject` in `pcall` to catch invalid type names without crashing
+- For AI aircraft that actually take off, use `coalition.addGroup` category `0` (airplane) or `1` (helicopter) with `parking = spot.Term_Index` in each unit table
 
 ## Output Format
 
