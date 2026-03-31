@@ -1,7 +1,7 @@
 ---
 description: "Use when: creating DCS mission scenarios, building dynamic missions, spawning enemy groups, defining target zones, setting up AI patrols, creating SEAD threats, building air superiority scenarios, generating hostile ground units, mission scenario generation, inject lua, eval moose, create scenario"
 name: "MissionBuilder"
-tools: [vscode/memory, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, read/terminalSelection, read/terminalLastCommand, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/searchSubagent, search/usages, web/fetch, web/githubRepo, dcs-grpc-wrapper/call_grpc_method, dcs-grpc-wrapper/check_health, dcs-grpc-wrapper/get_proto_catalogue]
+tools: [vscode/memory, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, read/terminalSelection, read/terminalLastCommand, edit/createDirectory, edit/createFile, edit/editFiles, edit/rename, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/searchSubagent, search/usages, web/fetch, web/githubRepo, dcs-grpc-wrapper/call_grpc_method, dcs-grpc-wrapper/check_health]
 argument-hint: "Describe the scenario to create, e.g. 'Create a SEAD scenario with SAM sites near Batumi and enemy CAP over the frontline'"
 ---
 
@@ -77,29 +77,68 @@ The full Moose source is at `./libs/Moose/`. Read relevant files before composin
 
 1. **Read the scenario request** — understand what is being asked (threat type, area, coalition balance, complexity).
 2. **Health check** — call `check_health` via the `dcs-grpc-wrapper` MCP tool before doing anything else. If the health check fails, stop and report that the gRPC wrapper is unreachable — do not attempt to inject Lua.
-3. **Query theatre context** — use `call_grpc_method` with method `GetTheatre` (world service) to understand the current map, then query coalition info if needed to find existing template groups.
-4. **Explore relevant Moose APIs** — read the source files for the modules you'll use to get exact method signatures. Do not guess API calls.
-5. **Compose the Lua injection** — write complete, self-contained Lua that:
+3. **Inject the prelude** — read `libs/mission-builder-lib.lua` from disk and inject its full contents via `Eval`. This installs `MB_safeExec` in the hook environment. All subsequent Lua injections MUST use `MB_safeExec`. Skip this step if `MB_safeExec` is already confirmed present from a prior injection in this session, or if the user confirms they have loaded it via a mission trigger before runtime.
+4. **Query theatre context** — use `call_grpc_method` with method `GetTheatre` (world service) to understand the current map, then query coalition info if needed to find existing template groups.
+5. **Explore relevant Moose APIs** — read the source files for the modules you'll use to get exact method signatures. Do not guess API calls.
+6. **Compose the Lua injection** — write complete, self-contained Lua that:
    - Uses template group names already present in the mission editor (agent must query `GetGroups` or similar to find valid templates, or ask the user for template names)
    - Leverages Moose dispatchers and schedulers so everything is autonomous
-   - Includes `MESSAGE:New("Scenario: [name] initialized", 30):ToAll()` at the end to confirm injection
-6. **Inject via Eval** — call `call_grpc_method` with:
-   ```json
-   { "method": "Eval", "payload": { "lua": "<your lua code>" } }
-   ```
-7. **Confirm and summarize** — report what was created: unit groups, zones, dispatchers started, and expected autonomous behavior.
-8. **Diagnose errors if needed** — if the injection appears to have failed or the user reports unexpected behavior, read the log files (see **Error Diagnosis** below) to identify the root cause, then re-inject a corrected Lua block. Only do this in response to a reported error — do not poll logs after every injection.
+   - Includes `trigger.action.outText("Scenario: [name] initialized", 30)` at the end to confirm injection
+7. **Inject via MB_safeExec** — wrap all scenario code in `MB_safeExec([==[...]==])` and send via `Eval` (see **Eval Call Format** below).
+8. **Verify** — confirm the group or system is live with a follow-up `Eval` using `net.dostring_in('server', 'return tostring(Group.getByName("name") ~= nil)')`. An empty string return from `MB_safeExec` means no Lua error; `"true"` from `Group.getByName` confirms the unit is live.
+9. **Confirm and summarize** — report what was created: unit groups, zones, dispatchers started, and expected autonomous behavior.
+10. **Diagnose errors if needed** — if the injection appears to have failed or the user reports unexpected behavior, read the log files (see **Error Diagnosis** below) to identify the root cause, then re-inject a corrected Lua block. Only do this in response to a reported error — do not poll logs after every injection.
 
 ## Eval Call Format
 
+All scenario code MUST be routed through `MB_safeExec` (installed by the prelude). `MB_safeExec` uses `net.dostring_in('server', ...)` internally to cross from the gRPC hook environment into the full DCS mission scripting environment where `coalition`, `trigger`, `Group`, `country`, and Moose globals are available.
+
+### Two Lua environments
+| Environment | How to reach | Available globals |
+|---|---|---|
+| Hook env | gRPC `Eval` directly | `net.*` only |
+| Mission/server env | `net.dostring_in('server', code)` | `coalition`, `trigger`, `Group`, `country`, Moose, `env` |
+
+`MB_safeExec` bridges these: it runs in the hook env but routes its argument into the mission env via `net.dostring_in`.
+
+### Step 1 — Inject the prelude (once per session)
 ```json
 {
   "method": "Eval",
   "payload": {
-    "lua": "-- Moose lua code here\nSPAWN:New('TemplateGroup'):Spawn()"
+    "lua": "<full contents of libs/mission-builder-lib.lua>"
   }
 }
 ```
+
+### Step 2 — Inject scenario code via MB_safeExec
+```json
+{
+  "method": "Eval",
+  "payload": {
+    "lua": "MB_safeExec([==[\n-- all scenario Lua here\ncoalition.addGroup(...)\ntrigger.action.outText('Scenario initialized', 30)\n]==])"
+  }
+}
+```
+
+### Step 3 — Verify the group was created
+```json
+{
+  "method": "Eval",
+  "payload": {
+    "lua": "return net.dostring_in('server', 'return tostring(Group.getByName(\"MB_MyGroup\") ~= nil)')"
+  }
+}
+```
+- `MB_safeExec` returns `""` (empty string) on success and surfaces errors in-game via `outText`.
+- `net.dostring_in` returns `"true"` if the group exists.
+
+### JSON encoding rules
+- The `lua` field value is a JSON string: newlines must be `\n`, backslashes must be `\\`
+- Use `[==[...]==]` (level-2 long string) as the delimiter for `MB_safeExec`'s argument — this safely contains any Lua code that itself uses `[[...]]` or `[=[...]=]` without delimiter collision
+- **Never** start a `lua` JSON string value with `[` — Lua long-string syntax at the start of a string causes parse errors. Always begin with `MB_safeExec(` or a `local` declaration
+- If the scenario code itself contains `]==]`, escalate to `[===[...]===]` (level-3)
+- `env` and `a_do_script` are **not** available in the hook env — use `net.log(...)` for hook-env logging and `net.dostring_in('server', ...)` for routing into the mission env
 
 The MCP server endpoint is `localhost:3000/mcp/dcs-grpc-wrapper`. Use the `call_grpc_method` tool directly — do not use terminal commands.
 
@@ -115,7 +154,67 @@ If an injection fails or produces unexpected results, read the DCS log files to 
 
 Use the `read` tool to access these files. Look for `ERROR`, `WARNING`, or Lua stack traces near the timestamp of the failed injection. Then correct the Lua and re-inject. Do not read these logs proactively — only on error.
 
+## Coordinate System
+
+**Critical — axes are NOT the same between gRPC and `coalition.addGroup`:**
+
+| Source | Field | DCS axis | Meaning |
+|---|---|---|---|
+| `GetAirbases` / `GetUnits` position | `u` | DCS `z` | Easting (east-west) |
+| `GetAirbases` / `GetUnits` position | `v` | DCS `x` | Northing (north-south, negative in Caucasus) |
+| `coalition.addGroup` group/unit table | `x` | DCS `x` | **Northing** — use gRPC `v` here |
+| `coalition.addGroup` group/unit table | `y` | DCS `z` | **Easting** — use gRPC `u` here |
+| `coord.LLtoLO(lat, lon, 0)` returns | `.x` | DCS `x` | Northing → use as `group.x` |
+| `coord.LLtoLO(lat, lon, 0)` returns | `.z` | DCS `z` | Easting → use as `group.y` |
+
+**Rule:** NEVER copy `u` → `group.x` or `v` → `group.y`. They are swapped.
+
+**Always resolve coordinates by calling `coord.LLtoLO` in the mission env** before spawning, rather than hardcoding or assuming gRPC position values map directly:
+
+```lua
+local p = coord.LLtoLO(42.8530556, 41.1233333, 0)  -- Sukhumi
+-- p.x = northing (-221499), p.z = easting (564343)
+coalition.addGroup(country.id.RUSSIA, 2, { x = p.x, y = p.z, ... })
+```
+
+To offset from a base coordinate:
+- 1 km north: `x = p.x + 1000`
+- 1 km east:  `y = p.z + 1000`
+
 ## Lua Composition Patterns
+
+### Pattern: Raw ground group spawn (no ME template required)
+```lua
+-- Use when no pre-placed template exists in the Mission Editor.
+-- Always resolve world coordinates via coord.LLtoLO — do NOT copy gRPC u/v directly.
+-- Group.Category.GROUND = 2 (use integer — Group global may not exist at spawn time)
+local p = coord.LLtoLO(42.8530556, 41.1233333, 0)  -- Sukhumi lat/lon
+-- Spawn 2 km north of airfield
+local gx = p.x + 2000  -- northing offset
+local gy = p.z          -- easting (no offset)
+coalition.addGroup(
+  country.id.RUSSIA,
+  2, -- Group.Category.GROUND
+  {
+    id         = 9001,
+    name       = 'MB_RedArmor',
+    task       = 'Ground Nothing',
+    hidden     = false,
+    x          = gx,
+    y          = gy,
+    start_time = 0,
+    units = {
+      { id=90011, name='MB_RA_1', type='T-72B', x=gx,       y=gy-100,  heading=3.14159, skill='Average', playerCanDrive=false },
+      { id=90012, name='MB_RA_2', type='T-72B', x=gx-100,   y=gy,      heading=3.14159, skill='Average', playerCanDrive=false },
+      { id=90013, name='MB_RA_3', type='T-72B', x=gx,       y=gy+100,  heading=3.14159, skill='Average', playerCanDrive=false },
+    },
+    route = { points = {
+      { action='Off Road', type='Turning Point', x=gx, y=gy, speed=0, ETA=0, ETA_locked=true, speed_locked=true }
+    }}
+  }
+)
+trigger.action.outText('Scenario: Red armor spawned', 30)
+```
 
 ### Pattern: Autonomous Red CAP over a zone
 ```lua

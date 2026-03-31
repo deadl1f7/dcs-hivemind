@@ -9,7 +9,7 @@ const PORT = Number(process.env.PORT) || 3000;
 // 1. Initialize gRPC Resources using the helper
 const { client: grpcClient, catalogue: protoCatalogue } = getGrpcClient({
     protoPath: process.env.DCS_GRPC_PROTO || path.resolve('proto', 'dcs.proto'),
-    target: process.env.DCS_GRPC_TARGET || 'localhost:50051'
+    target: process.env.DCS_GRPC_TARGET || '127.0.0.1:50051'
 });
 
 const app = express();
