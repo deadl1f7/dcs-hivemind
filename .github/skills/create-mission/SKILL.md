@@ -18,7 +18,7 @@ Generates a complete, structured DCS mission specification from a brief descript
 
 ### Step 1 — Query the Live Theatre
 
-Before interviewing the user, call `GetTheatre` via the dcs-world skill to determine the active map. Use the returned theatre name to look up location names, airbases, and terrain features from [DCS Theatre Reference](./assets/theatre-reference.md). This grounds all AO descriptions in the correct geography.
+Before interviewing the user, call `GetTheatre` via the dcs-world skill to determine the active map. Use the returned theatre name to look up location names, airbases, and terrain features from [DCS Theatre Reference](../../assets/theatre-reference.md). This grounds all AO descriptions in the correct geography.
 
 ### Step 2 — Interview the User
 
@@ -157,4 +157,4 @@ End the spec with a ready-to-use MissionBuilder invocation block — a single pa
 ## References
 
 - [Mission Spec Template](./assets/mission-spec-template.md)
-- [DCS Theatre Reference](./assets/theatre-reference.md)
+- [DCS Theatre Reference](../../assets/theatre-reference.md)

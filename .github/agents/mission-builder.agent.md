@@ -82,7 +82,7 @@ Apply `activateAD` to every SAM, EWR, AAA, and MANPAD group after spawning. This
 
 ### Unit type names
 
-**Do not guess unit type strings.** Always use the [Unit Reference](../skills/create-mission/assets/unit-reference.md). Key traps:
+**Do not guess unit type strings.** Always use the [Unit Reference](../assets/unit-reference.md). Key traps:
 - `Leopard-2A4` → **`Leopard-2`**
 - `M2 Bradley` → **`M-2 Bradley`**
 - `55G6` → **`55G6 EWR`**
@@ -153,7 +153,7 @@ The full Moose source is at `./libs/Moose/`. Read relevant files before composin
 5. **Explore relevant Moose APIs** — read the source files for the modules you'll use to get exact method signatures. Do not guess API calls.
 6. **Compose the Lua injection** — write complete, self-contained Lua that:
    - Uses template group names already present in the mission editor (agent must query `GetGroups` or similar to find valid templates, or ask the user for template names)
-   - Uses exact unit type names from the [Unit Reference](../skills/create-mission/assets/unit-reference.md) — never guess type strings
+   - Uses exact unit type names from the [Unit Reference](../assets/unit-reference.md) — never guess type strings
    - Prefers raw DCS APIs (`timer.scheduleFunction`, `getController():setTask`, alarm state) over Moose globals unless Moose availability is confirmed
    - Includes `trigger.action.outText("Scenario: [name] initialized", 30)` at the end to confirm injection
 7. **Inject via MB_safeExec** — wrap all scenario code in `MB_safeExec([==[...]==], "brief description of what is being created")` and send via `Eval` (see **Eval Call Format** below). The description is logged to `env.info` inside DCS automatically.
@@ -414,7 +414,7 @@ end, nil, timer.getTime() + 300)
 
 **Every aircraft spawned via `coalition.addGroup` MUST have a `payload` table with pylons populated for its tasking.** Never leave `pylons = {}`.
 
-See the **[Loadout Reference](../skills/create-mission/assets/loadout-reference.md)** for:
+See the **[Loadout Reference](../assets/loadout-reference.md)** for:
 - Payload table structure
 - Task → weapons category mapping
 - Full CLSID tables (Russian and NATO, verified from DCS UnitPayloads files)
