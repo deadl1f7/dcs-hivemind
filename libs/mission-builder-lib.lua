@@ -14,12 +14,15 @@
 --   Available:  net.*
 --   NOT available: env, a_do_script, coalition, trigger, Group, country
 
-function MB_safeExec(missionCode)
-    local safed = "local _mb_ok, _mb_err = pcall(function()\n"
+function MB_safeExec(missionCode, description)
+    local label = description or "scenario"
+    local safed = "env.info('[MissionBuilder] Creating: " .. label .. "')\n"
+        .. "local _mb_ok, _mb_err = pcall(function()\n"
         .. missionCode
         .. "\nend)\n"
         .. "if not _mb_ok then\n"
         .. "  trigger.action.outText('[MissionBuilder] ERROR: ' .. tostring(_mb_err), 30)\n"
+        .. "  env.info('[MissionBuilder] ERROR in " .. label .. ": ' .. tostring(_mb_err))\n"
         .. "end\n"
     return net.dostring_in('server', safed)
 end
