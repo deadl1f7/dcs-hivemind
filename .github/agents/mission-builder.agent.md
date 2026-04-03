@@ -414,94 +414,18 @@ end, nil, timer.getTime() + 300)
 
 **Every aircraft spawned via `coalition.addGroup` MUST have a `payload` table with pylons populated for its tasking.** Never leave `pylons = {}`.
 
-### Payload table structure
-Each unit in the group's `units` table requires a `payload` entry:
-```lua
-payload = {
-  pylons = {
-    [1] = { CLSID = "{GUID-OF-WEAPON}" },
-    [2] = { CLSID = "{GUID-OF-WEAPON}" },
-    -- one entry per pylon, keyed by pylon station number
-  },
-  fuel  = 3000,   -- kg (adjust per airframe; see aircraft max fuel)
-  flare = 60,
-  chaff = 60,
-  gun   = 100,    -- gun ammo percentage; always 100 unless airframe has no gun
-}
-```
+See the **[Loadout Reference](../skills/create-mission/assets/loadout-reference.md)** for:
+- Payload table structure
+- Task → weapons category mapping
+- Full CLSID tables (Russian and NATO, verified from DCS UnitPayloads files)
+- Per-airframe pylon layouts (Su-25 CAS/strike, Su-27 CAP, F-16C)
+- Airframe fuel reference
+- How to discover new CLSIDs from live units or DCS files
 
-### Task → Weapons category mapping
-| Tasking | Required weapon categories | Examples |
-|---|---|---|
-| CAP / Air Superiority | BVR missile + WVR missile | AMRAAM/R-77 + Sidewinder/R-73 |
-| SEAD / Suppression | Anti-radiation missile | AGM-88 HARM / Kh-58 |
-| Strike / BAI | Guided or unguided bombs, AGM | GBU-12, Mk-82, Kh-25 |
-| CAS | Rockets, AGM, cluster bombs | S-8, AGM-65, PTAB |
-| Escort | BVR + WVR missiles (same as CAP) | AMRAAM/R-77 + AIM-9/R-73 |
-| Intercept | BVR missile (minimum) | R-77, AIM-120 |
-
-### How to get accurate CLSIDs
-
-CLSIDs are weapon-specific GUIDs defined by DCS internally. **Do not guess them.** Use one of these methods in order of preference:
-
-**Method 1 — Preferred: Use an ME template group** (`SPAWN:New`)  
-ME template groups carry their loadout directly from the mission editor. If a template exists with the correct aircraft type and approximate tasking, always prefer `SPAWN:New("TemplateName")` over a raw `coalition.addGroup` spawn — the loadout is already correct.
-
-**Method 2 — Query a live armed unit of the same type** via `Eval`:
-```lua
--- Run this in MB_safeExec to get CLSIDs from a live unit
-local u = Unit.getByName("SomeUnitOfSameType")
-if u then
-  local pl = u:getDesc()  -- or inspect payload via serialise if available
-  -- log it
-  local units_in_group = u:getGroup():getUnits()
-  -- Unit desc won't expose pylons, so use DCS loadout API:
-  trigger.action.outText(require('inspect')(u:getDesc()), 30)
-end
-```
-
-**Method 3 — DCS weapon database lookup via Eval**  
-Query from the DCS weapon DB inside MB_safeExec:
-```lua
--- Dumps all weapon CLSIDs matching a keyword to outText for inspection
-local db = require('db_weapons')
-local results = {}
-for clsid, data in pairs(db) do
-  if data.displayName and string.find(data.displayName, 'R-77', 1, true) then
-    table.insert(results, clsid .. ' = ' .. data.displayName)
-  end
-end
-trigger.action.outText(table.concat(results, '\n'), 40)
-```
-
-**Method 4 — Known stable CLSIDs** (verified in DCS stable/MT; always double-check after DCS updates):
-| Weapon | CLSID |
-|---|---|
-| AIM-120C-5 (AMRAAM) | `{40EF17B7-F508-45de-8566-6FFECC0C1AB8}` |
-| AIM-9M Sidewinder | `{6CEB49FC-DED8-4DED-B053-E1F033FF72D3}` |
-| AIM-9X Sidewinder II | `{9BFD5E30-1760-4EB1-854B-A028BEA5C1E0}` |
-| AGM-88C HARM | `{B06DD79A-F21E-4EB9-BD9D-AB3844618C93}` |
-| GBU-12 Paveway II | `{AB8B8299-F1CC-4359-89B5-2172E0CF4A5A}` |
-| Mk-82 (unguided) | `{Mk-82}` |
-| R-77 (AA-12 Adder) | `{E8069896-9059-4F9F-8048-97C2AB5A7AB5}` |
-| R-73 (AA-11 Archer) | `{9B515B86-D72E-4B3D-B51D-5D82C0E41E71}` |
-| R-60M | `{44EE8698-89AA-4D8B-B882-3B5F5CFB9713}` |
-| Kh-58 (anti-radiation) | `{40E0EB29-5C98-4E70-A6DA-372B28B5C422}` |
-| B-8M1 80mm rockets (20-round pod) | `{FC769D06-728A-43A8-8ECF-C5E23A23F2FE}` |
-| FAB-500 M62 (dumb bomb) | `{ED55B5A2-9958-4C9F-A18F-52760888A9CA}` |
-
-> **Warning:** If a CLSID above fails to load (unit spawns without the weapon), fall back to Method 1 or 2. CLSIDs can change between DCS versions. Use the `db_weapons` query method to verify before spawning.
-
-### Airframe fuel reference (approximate kg)
-| Airframe | Internal fuel (kg) |
-|---|---|
-| MiG-29A/S | 3300 |
-| Su-27 | 9400 |
-| Su-25 | 3000 |
-| F-16C | 2550 |
-| F/A-18C | 4900 |
-| F-15C | 5100 |
-| AV-8B | 2700 |
+Key traps to remember:
+- `db_weapons` is **not available** in the mission scripting env — do not attempt `require('db_weapons')`
+- R-60M has **two different CLSIDs** depending on airframe: `{682A481F...}` for Su-25, `{44EE8698...}` for Su-27/MiG-29
+- `B-8M1` `{FC769D06...}` is **Su-25T only** — use `S-8KOM` `{E8D4652F...}` on the base Su-25
 
 ---
 
