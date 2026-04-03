@@ -183,6 +183,16 @@ All scenario code MUST be routed through `MB_safeExec` (installed by the prelude
 }
 ```
 
+After injecting the prelude, immediately register the agent name:
+```json
+{
+  "method": "Eval",
+  "payload": { "lua": "MB_setAgent('MissionBuilder')" }
+}
+```
+
+This ensures all subsequent `env.info` and `outText` log lines are tagged `[MissionBuilder]`. If another agent (e.g. Commander) has already called `MB_setAgent` during this session, this call resets the tag back to `MissionBuilder`.
+
 ### Step 2 — Inject scenario code via MB_safeExec
 ```json
 {

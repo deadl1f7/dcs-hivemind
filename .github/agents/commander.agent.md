@@ -68,6 +68,19 @@ Store these as the session's `commanderFaction`, `objective`, and `awacsUnit`.
 
 Call `check_health`. If `grpcClientConnected` is false, stop and report. Do not proceed.
 
+### Step 2b — Register Agent Name
+
+Immediately after a successful health check, inject the following via `Eval` to tag all subsequent log output with `[Commander]`:
+
+```json
+{
+  "method": "Eval",
+  "payload": { "lua": "MB_setAgent('Commander')" }
+}
+```
+
+If `MB_setAgent` is not yet defined (prelude not injected), inject `libs/mission-builder-lib.lua` first, then call `MB_setAgent('Commander')`.
+
 ### Step 3 — Build Initial Force Picture
 
 Call the following in sequence:
