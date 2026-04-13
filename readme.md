@@ -19,6 +19,8 @@ flowchart LR
 
 - Github Copilot Preferably Premium to leverage more advanced models.
 
+- NodeJS (<https://nodejs.org/en/download>)
+
 - aspire (<https://aspire.dev/get-started/install-cli/>)
 
 - dcs-grpc (<https://github.com/DCS-gRPC/rust-server>) Follow the guide to install and enable: ```eval = true``` (DANGER MAKE SURE YOU UNDERSTAND WHAT THIS IMPLIES), in the config at ```~/Saved Games/DCS/Config/dcs-grpc.lua```
