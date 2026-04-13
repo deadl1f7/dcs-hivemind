@@ -11,11 +11,11 @@ flowchart LR
 
 ## Requirements
 
-### aspire (<https://aspire.dev/get-started/install-cli/>)
+- aspire (<https://aspire.dev/get-started/install-cli/>)
 
-### dcs-grpc (<https://github.com/DCS-gRPC/rust-server>)
+- dcs-grpc (<https://github.com/DCS-gRPC/rust-server>) Follow the guide to install and enable: ```eval = true``` (DANGER MAKE SURE YOU UNDERSTAND WHAT THIS IMPLIES), in the config at ```~/Saved Games/DCS/Config/dcs-grpc.lua```
 
-Follow the guide to install and enable: ```eval = true``` (DANGER), in the config at ~/Saved Games/DCS/Config/dcs-grpc.lua
+- Add ```dofile(lfs.writedir()..[[Scripts\DCS-gRPC\grpc-mission.lua]])``` to the ```C:/SteamLibrary/steamapps/common/DCSWorld/Scripts/MissionScripting.lua``` or ED directory.
 
 ## Getting started
 
