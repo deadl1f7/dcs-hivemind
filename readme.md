@@ -100,6 +100,11 @@ Reference documents consumed by agents during mission planning and scenario buil
 | `loadout-reference.md` | Payload pylon tables and CLSID reference extracted verbatim from DCS `UnitPayloads` files. Do not invent CLSIDs. |
 | `theatre-reference.md` | Quick reference for each DCS map — key regions, airbases, and common scenario focal points. |
 
+### Available Libraries
+
+- **`libs/mission-builder-lib.lua`** — Core prelude. Must be injected before any `MB_*` function calls.
+- **`libs/Moose/`** — MOOSE source is included to piggy back on VSCode's indexing capability to improve intelligence of the agent, it can make semantic searches instead of loading everything into context. A point-in-time snapshot of the [MOOSE framework](https://github.com/FlightControl-Master/MOOSE) is included in this repo. It is **not** automatically kept up to date and may lag behind the current MOOSE release. Read the Moose source files from `libs/Moose/` when you need to understand available APIs or class signatures, but do not assume the snapshot reflects the latest upstream changes.
+
 ## How Lua Execution Works
 
 All scenario code is injected into the live DCS mission at runtime — no mission file editing required.
