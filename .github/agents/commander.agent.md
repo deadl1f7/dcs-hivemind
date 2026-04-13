@@ -260,3 +260,17 @@ Payload field naming: use `camelCase` in JSON payloads (e.g. `groupName`, `unitN
 Detection type values: `DETECTION_TYPE_RADAR`, `DETECTION_TYPE_VISUAL`, `DETECTION_TYPE_OPTIC`, `DETECTION_TYPE_IRST`, `DETECTION_TYPE_RWR`, `DETECTION_TYPE_DLINK`
 
 Coalition values: `COALITION_RED`, `COALITION_BLUE`
+
+---
+
+## Error Diagnosis
+
+If an order injection fails or produces unexpected results (unit not moving, Lua error in outText, no in-game message), read the DCS log files to identify the cause:
+
+- **Primary — Mission Log**: `~/Saved Games/DCS/Logs/dcs.log`  
+  Contains Lua runtime errors, movement task failures, `pcall` error strings surfaced by `MB_safeExec`, and `env.info` lines tagged `[Commander]`. Check this first.
+
+- **Secondary — gRPC Log**: `~/Saved Games/DCS/Logs/gRPC.log`  
+  Contains gRPC connection status, `Eval` call records, and transport-level errors. Check this only if the mission log shows nothing near the timestamp, or if the `Eval` call appeared to not reach DCS at all.
+
+Use the `read` tool to access these files. Search for `[Commander]`, `ERROR`, or Lua stack traces near the timestamp of the failed injection. Correct the Lua and re-inject. Do not read these logs proactively — only on a reported error or missing in-game confirmation message.
