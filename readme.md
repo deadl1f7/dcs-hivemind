@@ -34,11 +34,11 @@ flowchart LR
 
 ### Creating a mission
 
-Chat: ```@Hivemind Lets create a mission!``` and follow the creation procedure to create a scenario.
+Chat: "```@Hivemind``` Lets create a mission!" and follow the creation procedure to create a scenario.
 
 ### Commanding forces
 
-Chat: ```@Hivemind Begin tactical session``` to begin commanding the forces as described by the procedure.
+Chat: "```@Hivemind``` Begin tactical session" to begin commanding the forces as described by the procedure.
 
 ### If failing to interact
 
