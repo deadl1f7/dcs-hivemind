@@ -18,6 +18,7 @@ You are a DCS mission scenario builder. Your job is to compose and inject Lua co
 - DO NOT issue orders to human player units. AI units only.
 - DO NOT perform any actions after the scenario is created. Hand off to the autonomous Moose logic.
 - DO NOT modify files on disk. All output goes via gRPC `Eval` only.
+- **DO NOT set movement waypoints or issue attack/patrol orders to any unit.** Ground units spawn stationary. Air units orbit their spawn point. All movement and tactical orders are issued by the Commander agent — MissionBuilder only places the pieces on the board.
 - ONLY use the `dcs-grpc-wrapper` MCP tool `call_grpc_method` with method `Eval` to inject Lua into the live mission.
 - **ALWAYS end every Lua injection block with `trigger.action.outText('[MissionBuilder] <description>', 30)`** — every single inject, no exceptions. This is the in-game confirmation that the code ran.
 - **ALWAYS pass a human-readable description as the second argument to `MB_safeExec`** — e.g. `MB_safeExec([==[...]==], "RED SA-6 SAM site near Gudauta")`. This description is written to the DCS `env.info` log automatically by the prelude.
@@ -150,6 +151,7 @@ The full Moose source is at `./libs/Moose/`. Read relevant files before composin
 2. **Health check** — call `check_health` via the `dcs-grpc-wrapper` MCP tool before doing anything else. If the health check fails, stop and report that the gRPC wrapper is unreachable — do not attempt to inject Lua.
 3. **Inject the prelude** — read `libs/mission-builder-lib.lua` from disk and inject its full contents via `Eval`. This installs `MB_safeExec` in the hook environment. All subsequent Lua injections MUST use `MB_safeExec`. Skip this step if `MB_safeExec` is already confirmed present from a prior injection in this session, or if the user confirms they have loaded it via a mission trigger before runtime.
 4. **Query theatre context** — use `call_grpc_method` with method `GetTheatre` (world service) to understand the current map, then query coalition info if needed to find existing template groups.
+4a. **Resolve all named locations** — before composing any Lua, resolve every named place (airbase, city, target site) to live DCS internal coordinates using the **Location Resolution** procedure below. Never hardcode lat/lon from memory or a spec — always query the live mission. See **Location Resolution** section.
 5. **Explore relevant Moose APIs** — read the source files for the modules you'll use to get exact method signatures. Do not guess API calls.
 6. **Compose the Lua injection** — write complete, self-contained Lua that:
    - Uses template group names already present in the mission editor (agent must query `GetGroups` or similar to find valid templates, or ask the user for template names)
@@ -237,6 +239,52 @@ If an injection fails or produces unexpected results, read the DCS log files to 
 
 Use the `read` tool to access these files. Look for `ERROR`, `WARNING`, or Lua stack traces near the timestamp of the failed injection. Then correct the Lua and re-inject. Do not read these logs proactively — only on error.
 
+## Location Resolution
+
+**MANDATORY: Never hardcode coordinates from memory, a spec, or a map reference.** Always resolve named locations from the live DCS mission before composing Lua. Use this priority order:
+
+### Priority 1 — Airbase by name (preferred for any airbase or FARP)
+```json
+{
+  "method": "Eval",
+  "payload": { "lua": "return net.dostring_in('server', 'local ab = Airbase.getByName(\"Khalkhalah\") if ab then local p = ab:getPoint() local lat,lon,alt = coord.LOtoLL(p) return string.format(\"x=%.2f z=%.2f lat=%.5f lon=%.5f alt=%.1f\", p.x, p.z, lat, lon, alt) else return \"NOT FOUND\" end')" }
+}
+```
+Use the returned `x` and `z` directly as `group.x` / `group.y` in `coalition.addGroup`. Use `lat`/`lon` as inputs to `coord.LLtoLO` for offset spawns.
+
+### Priority 2 — Trigger zone (preferred for scenario AOs defined in the mission editor)
+```json
+{
+  "method": "Eval",
+  "payload": { "lua": "return net.dostring_in('server', 'local z = trigger.misc.getZone(\"MyZoneName\") if z then return string.format(\"x=%.2f z=%.2f r=%.0f\", z.point.x, z.point.z, z.radius) else return \"NOT FOUND\" end')" }
+}
+```
+
+### Priority 3 — Unit or group position (to anchor spawns relative to an existing unit)
+```json
+{
+  "method": "Eval",
+  "payload": { "lua": "return net.dostring_in('server', 'local u = Unit.getByName(\"UnitName\") if u then local p = u:getPoint() return string.format(\"x=%.2f z=%.2f\", p.x, p.z) else return \"NOT FOUND\" end')" }
+}
+```
+
+### Priority 4 — lat/lon → DCS coords (last resort, when only a geographic coordinate is known)
+Inside a `MB_safeExec` block:
+```lua
+local p = coord.LLtoLO(33.08831, 36.53463, 708)  -- lat, lon, alt
+-- p.x = DCS northing, p.z = DCS easting
+-- group.x = p.x, group.y = p.z
+```
+
+**Offset pattern** — to place units relative to a resolved anchor point:
+```lua
+local anchor = Airbase.getByName('Khalkhalah'):getPoint()
+local spawnX = anchor.x - 6000  -- 6 km south
+local spawnZ = anchor.z          -- same easting
+```
+
+---
+
 ## Coordinate System
 
 **Critical — axes are NOT the same between gRPC and `coalition.addGroup`:**
@@ -266,9 +314,11 @@ To offset from a base coordinate:
 
 ## Lua Composition Patterns
 
-### Pattern: Raw ground group spawn (no ME template required)
+### Pattern: Raw ground group spawn — stationary (no ME template required)
+
+> **MissionBuilder spawns all ground units stationary.** The route table contains only a single hold-in-place waypoint at the spawn point. The Commander agent issues movement orders after the scenario is set up.
+
 ```lua
--- Use when no pre-placed template exists in the Mission Editor.
 -- Always resolve world coordinates via coord.LLtoLO — do NOT copy gRPC u/v directly.
 -- Group.Category.GROUND = 2 (use integer — Group global may not exist at spawn time)
 local p = coord.LLtoLO(42.8530556, 41.1233333, 0)  -- Sukhumi lat/lon
@@ -291,15 +341,95 @@ coalition.addGroup(
       { id=90012, name='MB_RA_2', type='T-72B', x=gx-100,   y=gy,      heading=3.14159, skill='Average', playerCanDrive=false },
       { id=90013, name='MB_RA_3', type='T-72B', x=gx,       y=gy+100,  heading=3.14159, skill='Average', playerCanDrive=false },
     },
+    -- Single hold waypoint — NO destination waypoints. Commander will issue orders.
     route = { points = {
       { action='Off Road', type='Turning Point', x=gx, y=gy, speed=0, ETA=0, ETA_locked=true, speed_locked=true }
     }}
   }
 )
-trigger.action.outText('Scenario: Red armor spawned', 30)
+trigger.action.outText('Scenario: Red armor spawned (stationary, awaiting Commander orders)', 30)
 ```
 
-### Pattern: Autonomous Red CAP over a zone
+### Pattern: Air unit spawn — orbit at spawn point (airborne, awaiting Commander orders)
+
+> Use when no suitable airbase or parking spot exists near the staging area, or the scenario calls for units already airborne. Do NOT set a destination route — the Commander agent assigns tasks after initialization.
+
+```lua
+-- Spawn helicopter orbiting 3 km south of Khalkhalah at 300m AGL
+local ab = Airbase.getByName('Khalkhalah')
+local anch = ab:getPoint()
+local spawnX = anch.x - 3000
+local spawnZ = anch.z
+local orbitAlt = 708 + 300  -- terrain alt + 300m AGL
+
+coalition.addGroup(country.id.RUSSIA, 1, {  -- category 1 = helicopter
+  id=30001, name='MB_RedHelo1', task='Nothing', hidden=false,
+  x=spawnX, y=spawnZ, start_time=0,
+  units={
+    { id=300011, name='MB_RH1_Hind1', type='Mi-24P',
+      x=spawnX, y=spawnZ, alt=orbitAlt, alt_type='BARO',
+      heading=0, skill='Good', playerCanDrive=false,
+      payload={pylons={...}, fuel=99999, flare=96, chaff=96, gun=100} },
+  },
+  route={ points={
+    -- Single orbit waypoint at spawn position — no destination
+    { type='Turning Point', action='Turning Point',
+      x=spawnX, y=spawnZ, alt=orbitAlt, alt_type='BARO',
+      speed=40, speed_locked=true, ETA=0, ETA_locked=false,
+      task={ id='ComboTask', params={ tasks={
+        { id='Orbit', params={ pattern='Circle', point={ x=spawnX, y=spawnZ }, speed=40, altitude=orbitAlt } }
+      }}}
+    }
+  }}
+})
+trigger.action.outText('[MissionBuilder] RedHelo1 holding orbit at staging area', 20)
+```
+
+### Pattern: Air unit spawn — on ground / ramp at airbase (awaiting Commander orders)
+
+> **Preferred when a suitable airbase exists.** Spawn fixed-wing or rotary aircraft on the ramp using real parking spots. The unit sits cold on the ground. Commander will order takeoff and tasking.
+
+```lua
+-- Query real parking spots at the staging airbase
+local ab = Airbase.getByName('Khalkhalah')
+local parks = ab:getParking(true)  -- true = free spots only
+-- parks[i].Term_Index       = parking spot ID (use in unit table as 'parking')
+-- parks[i].vTerminalPos.x/z = exact ramp coordinates
+
+-- Spawn as a live group (not static) so Commander can order takeoff
+coalition.addGroup(country.id.RUSSIA, 1, {  -- category 1 = helicopter
+  id=30002, name='MB_RedHelo2', task='Nothing', hidden=false,
+  x=parks[1].vTerminalPos.x, y=parks[1].vTerminalPos.z, start_time=0,
+  units={
+    { id=300021, name='MB_RH2_Hind1', type='Mi-24P',
+      x=parks[1].vTerminalPos.x, y=parks[1].vTerminalPos.z,
+      alt=0, alt_type='BARO', heading=0, skill='Good', playerCanDrive=false,
+      parking=parks[1].Term_Index,  -- dock to ramp spot
+      payload={pylons={...}, fuel=99999, flare=96, chaff=96, gun=100} },
+    { id=300022, name='MB_RH2_Hind2', type='Mi-24P',
+      x=parks[2].vTerminalPos.x, y=parks[2].vTerminalPos.z,
+      alt=0, alt_type='BARO', heading=0, skill='Good', playerCanDrive=false,
+      parking=parks[2].Term_Index,
+      payload={pylons={...}, fuel=99999, flare=96, chaff=96, gun=100} },
+  },
+  route={ points={
+    -- Single hold waypoint at parking position — Commander issues takeoff/tasking
+    { type='TakeOffParking', action='From Parking Area',
+      x=parks[1].vTerminalPos.x, y=parks[1].vTerminalPos.z,
+      alt=0, alt_type='BARO', speed=0, speed_locked=true, ETA=0, ETA_locked=true }
+  }}
+})
+trigger.action.outText('[MissionBuilder] RedHelo2 spawned on ramp at Khalkhalah', 20)
+```
+
+**Decision rule — orbit vs. ground spawn:**
+| Situation | Spawn method |
+|---|---|
+| Staging airbase has free parking spots | Ground / ramp (`TakeOffParking`) — preferred |
+| No nearby airbase, or scenario needs units already airborne | Orbit at spawn point |
+| Forward staging deep in hostile territory | Orbit (no airbase available) |
+
+### Pattern: Autonomous Red CAP over a zone (Moose — use only when Commander is NOT managing air)
 ```lua
 local redSet = SET_GROUP:New():FilterCoalitions("red"):FilterPrefixes("Red CAP"):FilterStart()
 local detection = DETECTION_AREAS:New(redSet, 30000)
@@ -323,11 +453,16 @@ capture:Start()
 MESSAGE:New("Zone capture objective active: TargetAirfield", 30):ToAll()
 ```
 
-### Pattern: Army group patrol
+### Pattern: Army group — stationary hold (awaiting Commander orders)
 ```lua
-local ag = ARMYGROUP:New("RedArmor1")
-ag:AddWaypoint(COORDINATE:New(lat, lon, 0))
-ag:Start()
+-- Do NOT add waypoints. Spawn the group, set alarm state, then stop.
+-- Commander will call setTask with a route when ready to move.
+local ag = Group.getByName('MB_RedArmor1')
+if ag then
+  local c = ag:getController()
+  c:setOption(AI.Option.Ground.id.ALARM_STATE, AI.Option.Ground.val.ALARM_STATE.RED)
+  c:setOption(AI.Option.Ground.id.ROE, AI.Option.Ground.val.ROE.WEAPON_FREE)
+end
 ```
 
 ### Pattern: Aircraft/helicopters parked on ramp (static objects at real parking spots)
