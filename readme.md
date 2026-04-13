@@ -44,3 +44,11 @@ Chat: ```@Hivemind Begin tactical session``` to begin commanding the forces as d
 
 Check connection with
 Chat: ```/test-mcp-health```
+
+### Agents
+- mission-builder all your mission building purposes
+- commander to control the forces
+
+### Skills
+
+- Wrapper skills around all protos. 
