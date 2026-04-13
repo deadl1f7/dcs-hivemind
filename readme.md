@@ -39,3 +39,8 @@ Chat: ```@Hivemind Lets create a mission!``` and follow the creation procedure t
 ### Commanding forces
 
 Chat: ```@Hivemind Begin tactical session``` to begin commanding the forces as described by the procedure.
+
+### If failing to interact
+
+Check connection with
+Chat: ```/test-mcp-health```
