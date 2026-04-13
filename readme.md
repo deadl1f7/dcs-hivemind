@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart LR
-    A[Copilot Agent] --> B[MCP Server]
+    A[Copilot] --> B[MCP Server]
     B --> C[dcs-grpc]
     C --> D[DCS Lua / MOOSE]
 ```
