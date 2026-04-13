@@ -2,6 +2,7 @@
 
 ## Purpose
 
+Create an agent integration with dcs.
 This is a crude POC of what can be done, theres alot of bugs, missing loadouts for some flights etc.
 In the future a agent environment controlled via discord bot would be a viable approach.
 
