@@ -32,32 +32,28 @@ Invoke DCS Coalition service gRPC methods for managing and querying coalition-le
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Get all groups in coalition:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetGroups\",\"payload\":{\"coalition\":\"COALITION_BLUE\"}}
-'@
+```json
+{"method": "GetGroups", "payload": {"coalition": "COALITION_BLUE"}}
 ```
 
 Get player-controlled units:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetPlayerUnits\",\"payload\":{\"coalition\":\"COALITION_BLUE\"}}
-'@
+```json
+{"method": "GetPlayerUnits", "payload": {"coalition": "COALITION_BLUE"}}
 ```
 
 Get bullseye position:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetBullseye\",\"payload\":{\"coalition\":\"COALITION_BLUE\"}}
-'@
+```json
+{"method": "GetBullseye", "payload": {"coalition": "COALITION_BLUE"}}
 ```
 
 Get static objects:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetStaticObjects\",\"payload\":{\"coalition\":\"COALITION_BLUE\"}}
-'@
+```json
+{"method": "GetStaticObjects", "payload": {"coalition": "COALITION_BLUE"}}
 ```
 
 ## References

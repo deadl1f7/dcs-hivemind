@@ -26,46 +26,38 @@ Invoke DCS Net service gRPC methods for multiplayer server management.
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Send chat to all:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"SendChat\",\"payload\":{\"message\":\"Hello everyone!\",\"coalition\":\"COALITION_ALL\"}}
-'@
+```json
+{"method": "SendChat", "payload": {"message": "Hello everyone!", "coalition": "COALITION_ALL"}}
 ```
 
 Send direct message:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"SendChatTo\",\"payload\":{\"message\":\"Hello!\",\"targetPlayerId\":1}}
-'@
+```json
+{"method": "SendChatTo", "payload": {"message": "Hello!", "targetPlayerId": 1}}
 ```
 
 Get connected players:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetPlayers\",\"payload\":{}}
-'@
+```json
+{"method": "GetPlayers", "payload": {}}
 ```
 
 Kick player:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"KickPlayer\",\"payload\":{\"playerId\":1,\"message\":\"You have been kicked\"}}
-'@
+```json
+{"method": "KickPlayer", "payload": {"playerId": 1, "message": "You have been kicked"}}
 ```
 
 Force player into Blue coalition:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"ForcePlayerSlot\",\"payload\":{\"playerId\":1,\"coalition\":\"COALITION_BLUE\",\"slotId\":\"Pilot-1\"}}
-'@
+```json
+{"method": "ForcePlayerSlot", "payload": {"playerId": 1, "coalition": "COALITION_BLUE", "slotId": "Pilot-1"}}
 ```
 
 Move player to spectators:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"ForcePlayerSlot\",\"payload\":{\"playerId\":1,\"coalition\":\"COALITION_NEUTRAL\",\"slotId\":\"\"}}
-'@
+```json
+{"method": "ForcePlayerSlot", "payload": {"playerId": 1, "coalition": "COALITION_NEUTRAL", "slotId": ""}}
 ```
 
 ## References

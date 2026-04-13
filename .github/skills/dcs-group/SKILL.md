@@ -24,32 +24,28 @@ Invoke DCS Group service gRPC methods for querying and controlling unit groups.
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Get all units in group:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetUnits\",\"payload\":{\"groupName\":\"Group-1\"}}
-'@
+```json
+{"method": "GetUnits", "payload": {"groupName": "Group-1"}}
 ```
 
 Get only active units:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetUnits\",\"payload\":{\"groupName\":\"Group-1\",\"active\":true}}
-'@
+```json
+{"method": "GetUnits", "payload": {"groupName": "Group-1", "active": true}}
 ```
 
 Activate late-activation group:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"Activate\",\"payload\":{\"groupName\":\"Group-1\"}}
-'@
+```json
+{"method": "Activate", "payload": {"groupName": "Group-1"}}
 ```
 
 Destroy group:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"Destroy\",\"payload\":{\"groupName\":\"Group-1\"}}
-'@
+```json
+{"method": "Destroy", "payload": {"groupName": "Group-1"}}
 ```
 
 ## References

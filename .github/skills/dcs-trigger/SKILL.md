@@ -37,53 +37,43 @@ Invoke DCS Trigger service gRPC methods for UI notifications, screen text, marks
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Display text to all:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"OutText\",\"payload\":{\"text\":\"Mission briefing: Proceed to checkpoint Alpha\",\"displayTime\":10,\"clearPrevious\":false}}
-'@
+```json
+{"method": "OutText", "payload": {"text": "Mission briefing: Proceed to checkpoint Alpha", "displayTime": 10, "clearPrevious": false}}
 ```
 
 Display text to coalition:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"OutTextForCoalition\",\"payload\":{\"coalition\":\"COALITION_BLUE\",\"text\":\"All units, check in\",\"displayTime\":5}}
-'@
+```json
+{"method": "OutTextForCoalition", "payload": {"coalition": "COALITION_BLUE", "text": "All units, check in", "displayTime": 5}}
 ```
 
 Display text to group:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"OutTextForGroup\",\"payload\":{\"groupName\":\"Group-1\",\"text\":\"Group instruction\",\"displayTime\":5}}
-'@
+```json
+{"method": "OutTextForGroup", "payload": {"groupName": "Group-1", "text": "Group instruction", "displayTime": 5}}
 ```
 
 Add mark on map:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"MarkToAll\",\"payload\":{\"text\":\"Checkpoint A\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":0},\"readonly\":false}}
-'@
+```json
+{"method": "MarkToAll", "payload": {"text": "Checkpoint A", "position": {"lat": 40.0, "lon": 0.0, "alt": 0}, "readonly": false}}
 ```
 
 Set user flag:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"SetUserFlag\",\"payload\":{\"flag\":1,\"value\":42}}
-'@
+```json
+{"method": "SetUserFlag", "payload": {"flag": 1, "value": 42}}
 ```
 
 Get user flag:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetUserFlag\",\"payload\":{\"flag\":1}}
-'@
+```json
+{"method": "GetUserFlag", "payload": {"flag": 1}}
 ```
 
 Remove mark:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"RemoveMark\",\"payload\":{\"markId\":5}}
-'@
+```json
+{"method": "RemoveMark", "payload": {"markId": 5}}
 ```
 
 ## References

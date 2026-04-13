@@ -23,18 +23,18 @@ Invoke DCS Metadata service gRPC methods for system health and version informati
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Check health:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetHealth\",\"payload\":{}}
-'@
+```json
+{"method": "GetHealth", "payload": {}}
 ```
 
 Get version:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetVersion\",\"payload\":{}}
-'@
+```json
+{"method": "GetVersion", "payload": {}}
 ```
 
 ## Notes

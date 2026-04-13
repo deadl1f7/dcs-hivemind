@@ -26,25 +26,23 @@ Invoke DCS World service gRPC methods for querying world state and geography inf
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Get Blue coalition airbases:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetAirbases\",\"payload\":{\"coalition\":\"COALITION_BLUE\"}}
-'@
+```json
+{"method": "GetAirbases", "payload": {"coalition": "COALITION_BLUE"}}
 ```
 
 Get all mark panels:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetMarkPanels\",\"payload\":{}}
-'@
+```json
+{"method": "GetMarkPanels", "payload": {}}
 ```
 
 Get theatre/map name:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetTheatre\",\"payload\":{}}
-'@
+```json
+{"method": "GetTheatre", "payload": {}}
 ```
 
 ## References

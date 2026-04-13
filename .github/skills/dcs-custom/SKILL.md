@@ -29,32 +29,28 @@ Invoke DCS Custom service gRPC methods for non-standard but useful mission funct
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Request mission assignment:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"RequestMissionAssignment\",\"payload\":{\"unitName\":\"Pilot-1\",\"missionType\":\"CAP\"}}
-'@
+```json
+{"method": "RequestMissionAssignment", "payload": {"unitName": "Pilot-1", "missionType": "CAP"}}
 ```
 
 Join DCT mission:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"JoinMission\",\"payload\":{\"unitName\":\"Pilot-1\",\"missionCode\":12345}}
-'@
+```json
+{"method": "JoinMission", "payload": {"unitName": "Pilot-1", "missionCode": 12345}}
 ```
 
 Get magnetic declination:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetMagneticDeclination\",\"payload\":{\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":1000}}}
-'@
+```json
+{"method": "GetMagneticDeclination", "payload": {"position": {"lat": 40.0, "lon": 0.0, "alt": 1000}}}
 ```
 
 Evaluate Lua:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"Eval\",\"payload\":{\"luaCode\":\"return world.theatre()\"}}
-'@
+```json
+{"method": "Eval", "payload": {"luaCode": "return world.theatre()"}}
 ```
 
 ## References

@@ -25,32 +25,28 @@ Invoke DCS SRS (Simple Radio Standalone) service gRPC methods for radio transmis
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Transmit radio message (English):
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"Transmit\",\"payload\":{\"ssml\":\"Check six position, bandits at twelve o clock\",\"plaintext\":\"Check six position, bandits at twelve o clock\",\"frequency\":251000000,\"coalition\":\"COALITION_BLUE\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
-'@
+```json
+{"method": "Transmit", "payload": {"ssml": "Check six position, bandits at twelve o clock", "plaintext": "Check six position, bandits at twelve o clock", "frequency": 251000000, "coalition": "COALITION_BLUE", "position": {"lat": 40.0, "lon": 0.0, "alt": 5000}}}
 ```
 
 Transmit with SSML (prosody control):
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"Transmit\",\"payload\":{\"ssml\":\"<prosody rate=\\"0.9\\">Roger, low fuel state</prosody>\",\"plaintext\":\"Roger, low fuel state\",\"frequency\":251000000,\"coalition\":\"COALITION_BLUE\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
-'@
+```json
+{"method": "Transmit", "payload": {"ssml": "<prosody rate=\"0.9\">Roger, low fuel state</prosody>", "plaintext": "Roger, low fuel state", "frequency": 251000000, "coalition": "COALITION_BLUE", "position": {"lat": 40.0, "lon": 0.0, "alt": 5000}}}
 ```
 
 Async transmission (non-blocking):
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"Transmit\",\"payload\":{\"ssml\":\"Contact visual\",\"frequency\":251000000,\"async\":true,\"coalition\":\"COALITION_BLUE\",\"position\":{\"lat\":40.0,\"lon\":0.0,\"alt\":5000}}}
-'@
+```json
+{"method": "Transmit", "payload": {"ssml": "Contact visual", "frequency": 251000000, "async": true, "coalition": "COALITION_BLUE", "position": {"lat": 40.0, "lon": 0.0, "alt": 5000}}}
 ```
 
 Get SRS clients:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetClients\",\"payload\":{}}
-'@
+```json
+{"method": "GetClients", "payload": {}}
 ```
 
 ## Notes

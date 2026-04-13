@@ -46,10 +46,8 @@ Use this skill to understand the common data structures and enums when working w
 
 ## Invocation
 
-While dcs-common itself is not directly invoked, it's used by all other DCS services. Reference the specific service skill (dcs-unit, dcs-mission, etc.) and use the MCP tool call:
+While dcs-common itself is not directly invoked, it's used by all other DCS services. Reference the specific service skill (dcs-unit, dcs-mission, etc.).
 
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"MethodName\",\"payload\":{}}
-'@
-```
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal. Always:
+> 1. Load: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with `{"method": "MethodName", "payload": {}}`

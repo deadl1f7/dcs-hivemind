@@ -43,25 +43,23 @@ Invoke DCS Mission service gRPC methods for streaming events and units, managing
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Stream events:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"StreamEvents\",\"payload\":{}}
-'@
+```json
+{"method": "StreamEvents", "payload": {}}
 ```
 
 Get scenario current time:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetScenarioCurrentTime\",\"payload\":{}}
-'@
+```json
+{"method": "GetScenarioCurrentTime", "payload": {}}
 ```
 
 Add mission command:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"AddMissionCommand\",\"payload\":{\"path\":[\"MyCommand\"],\"name\":\"Click Me\",\"func\":{\"name\":\"myFunc\"}}}
-'@
+```json
+{"method": "AddMissionCommand", "payload": {"path": ["MyCommand"], "name": "Click Me", "func": {"name": "myFunc"}}}
 ```
 
 ## References

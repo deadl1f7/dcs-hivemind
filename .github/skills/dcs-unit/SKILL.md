@@ -35,39 +35,33 @@ Invoke DCS Unit service gRPC methods for querying and controlling individual uni
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Get unit position:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetPosition\",\"payload\":{\"name\":\"Pilot-1\"}}
-'@
+```json
+{"method": "GetPosition", "payload": {"name": "Pilot-1"}}
 ```
 
 Get unit transform (position, orientation, velocity):
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetTransform\",\"payload\":{\"name\":\"Pilot-1\"}}
-'@
+```json
+{"method": "GetTransform", "payload": {"name": "Pilot-1"}}
 ```
 
 Get radar status:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetRadar\",\"payload\":{\"name\":\"Pilot-1\"}}
-'@
+```json
+{"method": "GetRadar", "payload": {"name": "Pilot-1"}}
 ```
 
 Enable emissions:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"SetEmission\",\"payload\":{\"name\":\"Pilot-1\",\"emitting\":true}}
-'@
+```json
+{"method": "SetEmission", "payload": {"name": "Pilot-1", "emitting": true}}
 ```
 
 Get player controlling unit:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetPlayerName\",\"payload\":{\"name\":\"Pilot-1\"}}
-'@
+```json
+{"method": "GetPlayerName", "payload": {"name": "Pilot-1"}}
 ```
 
 ## References

@@ -22,25 +22,23 @@ Invoke DCS Timer service gRPC methods for scenario timing information.
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Get elapsed time since mission start:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetTime\",\"payload\":{}}
-'@
+```json
+{"method": "GetTime", "payload": {}}
 ```
 
 Get absolute mission time with date:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetAbsoluteTime\",\"payload\":{}}
-'@
+```json
+{"method": "GetAbsoluteTime", "payload": {}}
 ```
 
 Get mission start time:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetTimeZero\",\"payload\":{}}
-'@
+```json
+{"method": "GetTimeZero", "payload": {}}
 ```
 
 ## References

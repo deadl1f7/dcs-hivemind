@@ -16,27 +16,21 @@ Use this skill to invoke DCS gRPC methods directly from VS Code via MCP. Raw pay
 
 ## Available MCP Tools
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload
+
 ### call_grpc_method
 - **Description**: Invoke a gRPC method with optional payload
 - **Input**:
   - `method` (string, required): The gRPC method name
   - `payload` (object, optional): JSON payload for the method
-- **Usage**: `aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"YourMethod\",\"payload\":{\"key\":\"value\"}}
-'@`
 
 ## Quick Commands
 
-List available tools:
-```powershell
-aspire mcp tools --format json
-```
-
-Call a gRPC method:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"ExampleMethod\",\"payload\":{}}
-'@
+Call a gRPC method (pass as JSON to `mcp_dcs-grpc-wrap_call_grpc_method`):
+```json
+{"method": "ExampleMethod", "payload": {}}
 ```
 
 ## Notes

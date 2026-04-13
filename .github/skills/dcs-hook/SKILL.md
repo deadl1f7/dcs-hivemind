@@ -36,46 +36,38 @@ Invoke DCS Hook service gRPC methods for mission lifecycle control and hook envi
 
 ## Quick Examples
 
+> **CRITICAL — Tool Invocation**: NEVER use `aspire mcp call` in the terminal to invoke gRPC methods. Always use the MCP tool directly:
+> 1. Load deferred tool: `tool_search_tool_regex` with pattern `mcp_dcs-grpc-wrap`
+> 2. Call: `mcp_dcs-grpc-wrap_call_grpc_method` with the JSON payload below
+
 Get mission name:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"GetMissionName\",\"payload\":{}}
-'@
+```json
+{"method": "GetMissionName", "payload": {}}
 ```
 
 Pause mission:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"SetPaused\",\"payload\":{\"paused\":true}}
-'@
+```json
+{"method": "SetPaused", "payload": {"paused": true}}
 ```
 
 Unpause mission:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"SetPaused\",\"payload\":{\"paused\":false}}
-'@
+```json
+{"method": "SetPaused", "payload": {"paused": false}}
 ```
 
 Reload mission:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"ReloadCurrentMission\",\"payload\":{}}
-'@
+```json
+{"method": "ReloadCurrentMission", "payload": {}}
 ```
 
 Load next mission:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"LoadNextMission\",\"payload\":{}}
-'@
+```json
+{"method": "LoadNextMission", "payload": {}}
 ```
 
 Load specific mission:
-```powershell
-aspire mcp call dcs-grpc-wrapper call_grpc_method --input @'
-{\"method\":\"LoadMission\",\"payload\":{\"filePath\":\"/path/to/mission.miz\"}}
-'@
+```json
+{"method": "LoadMission", "payload": {"filePath": "/path/to/mission.miz"}}
 ```
 
 ## References
