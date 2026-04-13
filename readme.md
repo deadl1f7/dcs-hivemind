@@ -97,3 +97,55 @@ Reference documents consumed by agents during mission planning and scenario buil
 | `unit-reference.md` | Exact DCS `type` strings for ground units, vehicles, and statics extracted live from DCS. Use these to avoid silent substitution bugs. |
 | `loadout-reference.md` | Payload pylon tables and CLSID reference extracted verbatim from DCS `UnitPayloads` files. Do not invent CLSIDs. |
 | `theatre-reference.md` | Quick reference for each DCS map — key regions, airbases, and common scenario focal points. |
+
+## How Lua Execution Works
+
+All scenario code is injected into the live DCS mission at runtime — no mission file editing required.
+
+### The Execution Path
+
+```
+Copilot (MissionBuilder agent)
+  └─▶ call_grpc_method { method: "Eval", payload: { luaCode: "..." } }
+        └─▶ dcs-grpc-wrapper MCP Server (Node.js)
+              └─▶ gRPC → DCS-gRPC Rust server (runs in DCS process)
+                    └─▶ net.dostring_in("server", code)  ← hook environment
+                          └─▶ MB_safeExec wraps code in pcall
+                                └─▶ mission scripting environment
+                                      (coalition, trigger, Moose, Group, ...)
+```
+
+### The `Eval` gRPC Method
+
+The `dcs-custom` skill exposes a single `Eval` method that accepts raw Lua:
+
+```json
+{
+  "method": "Eval",
+  "payload": { "luaCode": "return world.theatre()" }
+}
+```
+
+This is gated behind `eval = true` in `~/Saved Games/DCS/Config/dcs-grpc.lua`. **Read what this enables before turning it on** — any connected client can execute arbitrary code inside DCS.
+
+### `MB_safeExec` — The Safety Wrapper
+
+`libs/mission-builder-lib.lua` is a one-time prelude injected at the start of a session. It defines `MB_safeExec(code, description)` in the gRPC hook environment.
+
+All subsequent scenario code is routed through it:
+
+```lua
+MB_safeExec([==[
+  -- your mission code here
+  coalition.addGroup(...)
+]==], "spawn red armour")
+```
+
+What it does internally:
+
+1. **Routes into the mission environment** — calls `net.dostring_in('server', ...)` which re-enters the full DCS mission scripting context where `coalition`, `trigger`, `Group`, Moose, etc. are available. The hook environment itself only has `net.*`.
+2. **Wraps in `pcall`** — catches any Lua errors so a bad spawn or Moose call cannot crash DCS or silently fail.
+3. **Surfaces errors in-game** — on failure, calls `trigger.action.outText(...)` to display the error on screen and logs it via `env.info(...)` to the DCS log.
+4. **Tags log lines** — every log entry is prefixed with the currently registered agent name (`MissionBuilder` or `Commander`), set via `MB_setAgent(name)`.
+
+The prelude itself runs in the hook env and is completely safe to inject before a mission loads actors.
