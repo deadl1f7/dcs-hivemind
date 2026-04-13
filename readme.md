@@ -28,5 +28,13 @@ flowchart LR
 
 1. Start aspire ```aspire start```
 2. Start the DCS mission
-3. Chat: ```@Hivemind Lets create a mission!``` and follow the creation procedure to create a scenario.
-4. Chat: ```@Hivemind Begin tactical session``` to begin commanding the forces as described by the procedure.
+
+## Using it
+
+### Creating a mission
+
+Chat: ```@Hivemind Lets create a mission!``` and follow the creation procedure to create a scenario.
+
+### Commanding forces
+
+Chat: ```@Hivemind Begin tactical session``` to begin commanding the forces as described by the procedure.
