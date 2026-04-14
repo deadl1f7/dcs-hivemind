@@ -69,7 +69,7 @@ Chat: ```/test-mcp-health```
 | `start-commander` | Initialises a tactical AI session and activates the Commander agent for a chosen faction. |
 | `test-mcp-health` | Verifies MCP server connectivity and gRPC client status via the `check_health` tool. |
 | `test-rest-health` | Verifies REST API availability and gRPC client status via the REST health endpoint. |
-| `aspire` | Manages the Aspire AppHost — start/stop, debug logs, adding integrations, and invoking MCP tools via the `aspire mcp` CLI. |
+| `aspire` | Manages the Aspire AppHost — start/stop, debug logs, adding integrations, and invoking MCP tools via the `aspire mcp` CLI. DONT USE ASPIRE TO INVOKE MCP, let the agent call the tools directly. |
 
 #### DCS gRPC Service Skills
 
