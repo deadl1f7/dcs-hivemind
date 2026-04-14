@@ -1,4 +1,4 @@
-<img width="1078" height="148" alt="bild" src="https://github.com/user-attachments/assets/d97fdd95-8799-4344-9c6b-2a65fc8f3e95" /># DCS-HIVEMIND
+# DCS-HIVEMIND
 
 ## Purpose
 
