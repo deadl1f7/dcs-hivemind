@@ -1,4 +1,4 @@
-# DCS-HIVEMIND
+<img width="1078" height="148" alt="bild" src="https://github.com/user-attachments/assets/d97fdd95-8799-4344-9c6b-2a65fc8f3e95" /># DCS-HIVEMIND
 
 ## Purpose
 
@@ -27,10 +27,14 @@ flowchart LR
 
 - Add ```dofile(lfs.writedir()..[[Scripts\DCS-gRPC\grpc-mission.lua]])``` to the ```C:/SteamLibrary/steamapps/common/DCSWorld/Scripts/MissionScripting.lua``` or ED directory.
 
+- [MOOSE framework](https://github.com/FlightControl-Master/MOOSE) should be loaded in mission.
+
 ## Getting started
 
 1. Start aspire ```aspire start```
 2. Start the DCS mission
+3. Make sure the MCP Tools are enabled
+   <img width="1078" height="148" alt="bild" src="https://github.com/user-attachments/assets/00b1a113-7628-465b-b45f-fa15849af26c" />
 
 ## Using it
 
