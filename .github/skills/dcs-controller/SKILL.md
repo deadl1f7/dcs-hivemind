@@ -51,4 +51,4 @@ Get radar-detected targets only:
 
 - [Alarm State Documentation](https://wiki.hoggitworld.com/view/DCS_option_alarmState)
 - [Target Detection Documentation](https://wiki.hoggitworld.com/view/DCS_func_getDetectedTargets)
-- [Proto File](../../proto/controller/v0/controller.proto)
+- [Proto File](../../libs/dcs-grpc/proto/controller/v0/controller.proto)

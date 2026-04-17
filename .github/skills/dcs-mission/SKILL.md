@@ -65,4 +65,4 @@ Add mission command:
 ## References
 
 - [Mission Service Documentation](https://wiki.hoggitworld.com/view/DCS_Class_Mission)
-- [Proto File](../../proto/mission/v0/mission.proto)
+- [Proto File](../../libs/dcs-grpc/proto/mission/v0/mission.proto)

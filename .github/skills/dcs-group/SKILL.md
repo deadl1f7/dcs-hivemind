@@ -51,4 +51,4 @@ Destroy group:
 ## References
 
 - [Group Class Documentation](https://wiki.hoggitworld.com/view/DCS_Class_Group)
-- [Proto File](../../proto/group/v0/group.proto)
+- [Proto File](../../libs/dcs-grpc/proto/group/v0/group.proto)

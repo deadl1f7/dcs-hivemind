@@ -44,4 +44,4 @@ Get mission start time:
 ## References
 
 - [Timer Singleton Documentation](https://wiki.hoggitworld.com/view/DCS_singleton_timer)
-- [Proto File](../../proto/timer/v0/timer.proto)
+- [Proto File](../../libs/dcs-grpc/proto/timer/v0/timer.proto)

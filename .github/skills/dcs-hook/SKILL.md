@@ -73,4 +73,4 @@ Load specific mission:
 ## References
 
 - [Hook Environment Documentation](https://wiki.hoggitworld.com/view/DCS_singleton_hook)
-- [Proto File](../../proto/hook/v0/hook.proto)
+- [Proto File](../../libs/dcs-grpc/proto/hook/v0/hook.proto)

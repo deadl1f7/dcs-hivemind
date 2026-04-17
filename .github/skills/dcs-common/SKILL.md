@@ -42,7 +42,7 @@ Use this skill to understand the common data structures and enums when working w
 ## References
 
 - [DCS Object Class Documentation](https://wiki.hoggitworld.com/view/DCS_Class_Object)
-- [Proto File](../../proto/common/v0/common.proto)
+- [Proto File](../../libs/dcs-grpc/proto/common/v0/common.proto)
 
 ## Invocation
 

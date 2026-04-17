@@ -46,4 +46,4 @@ Get temperature and pressure:
 ## References
 
 - [Atmosphere Singleton Documentation](https://wiki.hoggitworld.com/view/DCS_singleton_atmosphere)
-- [Proto File](../../proto/atmosphere/v0/atmosphere.proto)
+- [Proto File](../../libs/dcs-grpc/proto/atmosphere/v0/atmosphere.proto)

@@ -81,4 +81,4 @@ Remove mark:
 - [Trigger Singleton Documentation](https://wiki.hoggitworld.com/view/DCS_singleton_trigger)
 - [OutText Documentation](https://wiki.hoggitworld.com/view/DCS_func_outText)
 - [Mark Documentation](https://wiki.hoggitworld.com/view/DCS_func_markToAll)
-- [Proto File](../../proto/trigger/v0/trigger.proto)
+- [Proto File](../../libs/dcs-grpc/proto/trigger/v0/trigger.proto)

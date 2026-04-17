@@ -49,4 +49,4 @@ Get theatre/map name:
 
 - [World Singleton Documentation](https://wiki.hoggitworld.com/view/DCS_singleton_world)
 - [Airbases Documentation](https://wiki.hoggitworld.com/view/DCS_func_getAirbases)
-- [Proto File](../../proto/world/v0/world.proto)
+- [Proto File](../../libs/dcs-grpc/proto/world/v0/world.proto)

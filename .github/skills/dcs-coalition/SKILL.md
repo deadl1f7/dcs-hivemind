@@ -59,4 +59,4 @@ Get static objects:
 ## References
 
 - [Coalition Singleton Documentation](https://wiki.hoggitworld.com/view/DCS_singleton_coalition)
-- [Proto File](../../proto/coalition/v0/coalition.proto)
+- [Proto File](../../libs/dcs-grpc/proto/coalition/v0/coalition.proto)

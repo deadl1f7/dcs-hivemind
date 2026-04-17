@@ -46,4 +46,4 @@ These methods are useful for:
 
 ## References
 
-- [Proto File](../../proto/metadata/v0/metadata.proto)
+- [Proto File](../../libs/dcs-grpc/proto/metadata/v0/metadata.proto)

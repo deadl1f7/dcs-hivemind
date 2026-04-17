@@ -61,4 +61,4 @@ Get SRS clients:
 
 - [SRS Documentation](https://github.com/ciribob/DCS-SimpleRadioStandalone)
 - [SSML Tags Documentation](https://www.w3.org/TR/speech-synthesis/)
-- [Proto File](../../proto/srs/v0/srs.proto)
+- [Proto File](../../libs/dcs-grpc/proto/srs/v0/srs.proto)

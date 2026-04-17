@@ -65,4 +65,4 @@ Move player to spectators:
 - [Chat API Documentation](https://wiki.hoggitworld.com/view/DCS_func_send_chat)
 - [Player Info Documentation](https://wiki.hoggitworld.com/view/DCS_func_get_player_info)
 - [Kick Documentation](https://wiki.hoggitworld.com/view/DCS_func_kick)
-- [Proto File](../../proto/net/v0/net.proto)
+- [Proto File](../../libs/dcs-grpc/proto/net/v0/net.proto)

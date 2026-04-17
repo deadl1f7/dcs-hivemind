@@ -67,4 +67,4 @@ Get player controlling unit:
 ## References
 
 - [Unit Class Documentation](https://wiki.hoggitworld.com/view/DCS_Class_Unit)
-- [Proto File](../../proto/unit/v0/unit.proto)
+- [Proto File](../../libs/dcs-grpc/proto/unit/v0/unit.proto)

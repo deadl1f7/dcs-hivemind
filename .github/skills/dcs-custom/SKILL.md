@@ -55,4 +55,4 @@ Evaluate Lua:
 
 ## References
 
-- [Proto File](../../proto/custom/v0/custom.proto)
+- [Proto File](../../libs/dcs-grpc/proto/custom/v0/custom.proto)
