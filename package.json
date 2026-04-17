@@ -1,5 +1,5 @@
 {
-  "name": "aspire-apphost",
+  "name": "dcs-hivemind",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,8 +13,11 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.10.0",
     "@grpc/proto-loader": "^0.7.0",
+    "@langchain/core": "^1.1.40",
+    "@langchain/langgraph": "^1.2.8",
     "@modelcontextprotocol/sdk": "^1.28.0",
     "express": "^4.18.2",
+    "redis": "^5.12.1",
     "vscode-jsonrpc": "^8.2.0",
     "zod": "^4.3.6"
   },
