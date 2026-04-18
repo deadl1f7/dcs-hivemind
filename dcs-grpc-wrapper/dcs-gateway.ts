@@ -1,10 +1,10 @@
 import { createClient } from "redis";
-import { logInfo, logError, logWarning } from "@dcs-hivemind/util/logging.js";
-import type { DcsLuaMessage, LaneOrder } from "@dcs-hivemind/util/types.js";
-import { DcsGatewayLuaPrefix } from "@dcs-hivemind/util/constants.js";
+import { logInfo, logError, logWarning } from "../util/logging.js";
+import type { DcsLuaMessage, LaneOrder } from "../util/types.js";
+import { DcsGatewayLuaPrefix } from "../util/constants.js";
 
-const queueClient = createClient({ url: process.env.ConnectionStrings__queue });
-const messageClient = createClient({ url: process.env.ConnectionStrings__messaging });
+const queueClient = createClient({ url: process.env.ConnectionStrings__tacbus });
+const messageClient = createClient({ url: process.env.ConnectionStrings__tacbus });
 
 queueClient.on("error", (err) => console.error("Queue Client Error", err));
 messageClient.on("error", (err) => console.error("Message Client Error", err));

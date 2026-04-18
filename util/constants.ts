@@ -1,0 +1,1 @@
+export const DcsGatewayLuaPrefix = "dcs-lua";

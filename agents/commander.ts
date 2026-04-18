@@ -2,6 +2,7 @@ import { tool } from "@langchain/core/tools";
 import { StateSchema, MessagesValue, StateGraph, START, END } from "@langchain/langgraph";
 import z from "zod";
 
+console.log("Starting Commander Agent...");
 
 const State = new StateSchema({
     messages: MessagesValue,

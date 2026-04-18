@@ -13,7 +13,9 @@
   "include": [
     "apphost.ts",
     ".modules/**/*.ts",
-    "dcs-grpc-wrapper/**/*.ts"
+    "dcs-grpc-wrapper/**/*.ts",
+    "agents/**/*.ts",
+    "util/**/*.ts"
   ],
   "exclude": [
     "node_modules"
