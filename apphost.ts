@@ -22,16 +22,16 @@ const dcsGateway = await builder.addNodeApp("dcs-gateway", "./dist/dcs-grpc-wrap
     .withReference(redis)
     .waitFor(redis);
 
-
 const picture = await builder.addNodeApp("agent-picture", "./dist/agents", "picture.js")
     .withEnvironment("DEBUG", "true")
+    .withEnvironment("SENDER_NAME", "picture")
     .withReference(redis)
     .waitFor(redis);
-
 
 const commanderAgent = await builder.addNodeApp("agent-commander", "./dist/agents", "commander.js")
     .withEnvironment("DEBUG", "true")
     .withReference(redis)
     .waitFor(redis);
+
 
 await builder.build().run();

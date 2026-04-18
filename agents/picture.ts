@@ -3,11 +3,15 @@ import { DcsLuaMessage, LaneOrder } from "../util/types.js";
 import { logInfo, logError } from "../util/logging.js";
 import { DcsGatewayLuaPrefix } from "../util/constants.js";
 
-console.log("Starting Picture Agent...");
-
 const pollingRate = process.env.POLLING_RATE ? parseInt(process.env.POLLING_RATE) : 1000;
-const messageClient = createClient({ url: process.env.ConnectionStrings__tacbus });
-const queueClient = createClient({ url: process.env.ConnectionStrings__tacbus });
+
+const redisClient = createClient({ url: process.env.TACBUS_URI });
+
+const subscriber = redisClient.duplicate();
+
+await redisClient.connect();
+
+await subscriber.connect();
 
 const sender = process.env.SENDER_NAME;
 
@@ -16,7 +20,7 @@ if (!sender) {
     process.exit(1);
 }
 
-await messageClient.subscribe(sender, (message: string) => {
+subscriber.subscribe(sender, (message: string) => {
     logInfo(`Received message on ${sender}:`, { message });
 });
 
@@ -30,11 +34,13 @@ const getPicture = async (options: { priority?: LaneOrder } = {}) => {
 
     const priority: LaneOrder = options.priority || "low";
 
-    await queueClient.lPush(`${DcsGatewayLuaPrefix}:${priority}`, JSON.stringify(dcsLuaMessage));
+    logInfo(`Sending message to lane ${priority}:`, { dcsLuaMessage });
+
+    await redisClient.lPush(`${DcsGatewayLuaPrefix}:${priority}`, JSON.stringify(dcsLuaMessage));
 }
 
 setInterval(async () => {
-    console.log("Polling");
+
     try {
         await getPicture();
     } catch (err) {

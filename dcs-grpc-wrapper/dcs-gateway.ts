@@ -3,65 +3,35 @@ import { logInfo, logError, logWarning } from "../util/logging.js";
 import type { DcsLuaMessage, LaneOrder } from "../util/types.js";
 import { DcsGatewayLuaPrefix } from "../util/constants.js";
 
-const queueClient = createClient({ url: process.env.ConnectionStrings__tacbus });
-const messageClient = createClient({ url: process.env.ConnectionStrings__tacbus });
+const redisClient = createClient({ url: process.env.TACBUS_URI });
 
-queueClient.on("error", (err) => console.error("Queue Client Error", err));
-messageClient.on("error", (err) => console.error("Message Client Error", err));
-
-await queueClient.connect();
-await messageClient.connect();
+await redisClient.connect();
 
 const laneOrder: LaneOrder[] = ["high", "medium", "low"];
 
-const readLane = async (lane: string) => {
-    try {
-
-        const message = await queueClient.rPop(`${DcsGatewayLuaPrefix}:${lane}`);
-
-        if (!message) {
-            logInfo(`No message found in lane ${lane}`);
-            return;
-        }
-
-        logInfo(`Read from lane ${lane}`);
-
-        const { lua, sender } = JSON.parse(message) as DcsLuaMessage;
-
-        if (!lua) {
-            logWarning(`No message found in lane ${lane}, sender:${sender}`);
-            return;
-        }
-
-        const result = "test";
-
-        return { result, sender };
-    } catch (err) {
-        logError(`Error reading from lane ${lane}:`, err);
-    }
-
-};
-
 const startMultiLane = async (cancelToken: { cancelled: boolean }) => {
+
+    const keys = laneOrder.map(lane => `${DcsGatewayLuaPrefix}:${lane}`);
 
     while (!cancelToken.cancelled) {
         try {
+            const result = await redisClient.brPop(keys, 0);
 
-            for (const lane of laneOrder) {
+            if (result) {
+                const { key, element } = result;
+                const lane = key.split(':').pop();
 
-                const response = await readLane(lane);
+                logInfo(`Processing ${lane} priority command`);
 
-                if (!response) {
-                    continue;
-                }
+                const { lua, sender } = JSON.parse(element) as DcsLuaMessage;
 
-                const { result, sender } = response;
+                logInfo(`Executing LUA from lane ${lane}, sender:${sender}:`, { lua });
 
-                await messageClient.publish(sender, result);
+                await redisClient.publish(sender, "test");
             }
-
         } catch (err) {
-            logError("Error in consumeByMultilane:", err);
+            logError("Queue connection interrupted:", err);
+            await new Promise(r => setTimeout(r, 1000));
         }
     }
 }
